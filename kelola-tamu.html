@@ -1,0 +1,1583 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kelola Tamu — Eriel & Garyn</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --gold: #c9a84c;
+        --gold2: #e8c97a;
+        --dark: #0a0a0a;
+        --dark2: #111;
+        --dark3: #1a1a1a;
+        --border: #252525;
+        --gray: #666;
+        --text: #e0e0e0;
+        --green: #4ade80;
+        --red: #f87171;
+        --yellow: #fbbf24;
+        --blue: #60a5fa;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--dark);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      /* ADMIN LOCK */
+      .lock {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.97);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+      .lock.gone {
+        display: none;
+      }
+      .lock-box {
+        background: var(--dark3);
+        border: 1px solid rgba(201, 168, 76, 0.3);
+        padding: 2.5rem;
+        text-align: center;
+        max-width: 340px;
+        width: 90%;
+      }
+      .lock-box i {
+        font-size: 2rem;
+        color: var(--gold);
+        display: block;
+        margin-bottom: 1rem;
+      }
+      .lock-box h2 {
+        color: var(--gold);
+        font-size: 1rem;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.4rem;
+      }
+      .lock-box p {
+        color: var(--gray);
+        font-size: 0.78rem;
+        margin-bottom: 1.5rem;
+      }
+      .lock-inp {
+        width: 100%;
+        background: #111;
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 10px 14px;
+        font-family: "Inter", sans-serif;
+        font-size: 0.9rem;
+        outline: none;
+        margin-bottom: 1rem;
+        text-align: center;
+        letter-spacing: 0.2em;
+      }
+      .lock-inp:focus {
+        border-color: var(--gold);
+      }
+      .lock-btn {
+        width: 100%;
+        padding: 11px;
+        background: var(--gold);
+        color: #000;
+        border: none;
+        font-family: "Inter", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        cursor: pointer;
+      }
+      .lock-btn:hover {
+        background: var(--gold2);
+      }
+      .lock-err {
+        color: var(--red);
+        font-size: 0.75rem;
+        margin-top: 0.75rem;
+        display: none;
+      }
+
+      /* HEADER */
+      .header {
+        background: var(--dark2);
+        border-bottom: 1px solid var(--border);
+        padding: 14px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .header h1 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--gold);
+      }
+      .header p {
+        font-size: 0.7rem;
+        color: var(--gray);
+        margin-top: 2px;
+      }
+      .header-links {
+        display: flex;
+        gap: 8px;
+      }
+      .btn {
+        padding: 7px 14px;
+        border: 1px solid var(--gold);
+        background: transparent;
+        color: var(--gold);
+        font-family: "Inter", sans-serif;
+        font-size: 0.72rem;
+        font-weight: 500;
+        cursor: pointer;
+        letter-spacing: 0.05em;
+        transition: 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+      }
+      .btn:hover {
+        background: var(--gold);
+        color: #000;
+      }
+      .btn-sm {
+        padding: 5px 10px;
+        font-size: 0.68rem;
+      }
+      .btn-solid {
+        background: var(--gold);
+        color: #000;
+      }
+      .btn-solid:hover {
+        background: var(--gold2);
+      }
+      .btn-danger {
+        border-color: var(--red);
+        color: var(--red);
+      }
+      .btn-danger:hover {
+        background: var(--red);
+        color: #fff;
+        border-color: var(--red);
+      }
+      .btn-green {
+        border-color: var(--green);
+        color: var(--green);
+      }
+      .btn-green:hover {
+        background: var(--green);
+        color: #000;
+      }
+
+      /* LAYOUT */
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px;
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: 20px;
+        align-items: start;
+      }
+      @media (max-width: 860px) {
+        .container {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* PANELS */
+      .panel {
+        background: var(--dark3);
+        border: 1px solid var(--border);
+        padding: 0;
+        overflow: hidden;
+      }
+      .panel-head {
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .panel-head h2 {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--gold);
+        letter-spacing: 0.05em;
+      }
+      .panel-head span {
+        font-size: 0.7rem;
+        color: var(--gray);
+      }
+      .panel-body {
+        padding: 16px 18px;
+      }
+
+      /* TABS dalam panel kanan */
+      .ptabs {
+        display: flex;
+        border-bottom: 1px solid var(--border);
+      }
+      .ptab {
+        padding: 10px 16px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        color: var(--gray);
+        background: none;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        font-family: "Inter", sans-serif;
+        transition: 0.2s;
+        white-space: nowrap;
+      }
+      .ptab.active {
+        color: var(--gold);
+        border-bottom-color: var(--gold);
+      }
+      .ptab-content {
+        display: none;
+        padding: 18px;
+      }
+      .ptab-content.active {
+        display: block;
+      }
+
+      /* FORM */
+      .form-group {
+        margin-bottom: 14px;
+      }
+      .form-group label {
+        display: block;
+        font-size: 0.65rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--gray);
+        margin-bottom: 6px;
+      }
+      .form-inp {
+        width: 100%;
+        background: #111;
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 9px 12px;
+        font-family: "Inter", sans-serif;
+        font-size: 0.85rem;
+        outline: none;
+        transition: 0.2s;
+      }
+      .form-inp:focus {
+        border-color: var(--gold);
+      }
+      .form-inp::placeholder {
+        color: #444;
+      }
+      textarea.form-inp {
+        resize: vertical;
+        min-height: 120px;
+        line-height: 1.6;
+      }
+      .hint {
+        font-size: 0.7rem;
+        color: var(--gray);
+        margin-top: 5px;
+        line-height: 1.5;
+      }
+      .hint code {
+        background: #1a1a1a;
+        padding: 2px 6px;
+        font-size: 0.68rem;
+        color: var(--gold2);
+      }
+
+      /* PREVIEW AREA */
+      .preview-box {
+        background: #111;
+        border: 1px solid var(--border);
+        padding: 12px;
+        margin-top: 10px;
+        max-height: 200px;
+        overflow-y: auto;
+        font-size: 0.8rem;
+        line-height: 1.8;
+      }
+      .preview-name {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(201, 168, 76, 0.08);
+        border: 1px solid rgba(201, 168, 76, 0.15);
+        padding: 2px 10px;
+        margin: 2px 3px;
+        font-size: 0.78rem;
+      }
+      .preview-name.dup {
+        background: rgba(248, 113, 113, 0.08);
+        border-color: rgba(248, 113, 113, 0.2);
+        color: var(--red);
+      }
+      .preview-name.exists {
+        background: rgba(96, 165, 250, 0.08);
+        border-color: rgba(96, 165, 250, 0.2);
+        color: var(--blue);
+      }
+
+      /* STATS row */
+      .import-stats {
+        display: flex;
+        gap: 10px;
+        margin: 10px 0;
+        flex-wrap: wrap;
+      }
+      .istat {
+        background: #111;
+        border: 1px solid var(--border);
+        padding: 8px 14px;
+        font-size: 0.75rem;
+        text-align: center;
+      }
+      .istat-num {
+        font-size: 1.1rem;
+        font-weight: 700;
+        display: block;
+      }
+
+      /* GUEST LIST (panel kiri) */
+      .search-wrap {
+        position: relative;
+        margin-bottom: 10px;
+      }
+      .search-wrap input {
+        width: 100%;
+        background: #111;
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 8px 12px 8px 34px;
+        font-family: "Inter", sans-serif;
+        font-size: 0.8rem;
+        outline: none;
+      }
+      .search-wrap input:focus {
+        border-color: var(--gold);
+      }
+      .search-wrap i {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray);
+        font-size: 0.75rem;
+      }
+      .guest-list {
+        max-height: 520px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(201, 168, 76, 0.2) transparent;
+      }
+      .guest-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-bottom: 1px solid #161616;
+        transition: 0.15s;
+      }
+      .guest-item:hover {
+        background: #111;
+      }
+      .guest-num {
+        font-size: 0.65rem;
+        color: var(--gray);
+        width: 24px;
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .guest-name {
+        flex: 1;
+        font-size: 0.82rem;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .guest-status {
+        flex-shrink: 0;
+      }
+      .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+      .dot-opened {
+        background: var(--blue);
+      }
+      .dot-belum {
+        background: #333;
+      }
+      .guest-actions {
+        display: flex;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+
+      /* EDIT INLINE */
+      .edit-inp {
+        background: #111;
+        border: 1px solid var(--gold);
+        color: var(--text);
+        padding: 3px 8px;
+        font-family: "Inter", sans-serif;
+        font-size: 0.8rem;
+        outline: none;
+        width: 140px;
+      }
+
+      /* EMPTY / LOADING */
+      .empty-list {
+        text-align: center;
+        padding: 2rem;
+        color: var(--gray);
+        font-size: 0.82rem;
+      }
+      .empty-list i {
+        display: block;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .spinner {
+        display: inline-block;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* PAGINATION */
+      .pag {
+        display: flex;
+        gap: 4px;
+        padding: 10px 10px;
+        border-top: 1px solid var(--border);
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .pag-btn {
+        background: #111;
+        border: 1px solid var(--border);
+        color: var(--gray);
+        padding: 4px 9px;
+        font-size: 0.7rem;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+      }
+      .pag-btn.active {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .pag-btn:hover:not(.active):not([disabled]) {
+        border-color: #444;
+        color: var(--text);
+      }
+      .pag-info {
+        font-size: 0.68rem;
+        color: var(--gray);
+        margin-left: auto;
+      }
+
+      /* MODAL */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 8000;
+      }
+      .modal-overlay.show {
+        display: flex;
+      }
+      .modal-box {
+        background: var(--dark3);
+        border: 1px solid rgba(248, 113, 113, 0.3);
+        padding: 1.8rem;
+        max-width: 360px;
+        width: 90%;
+        text-align: center;
+      }
+      .modal-box i {
+        font-size: 1.6rem;
+        color: var(--red);
+        display: block;
+        margin-bottom: 0.6rem;
+      }
+      .modal-box h3 {
+        color: var(--red);
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+      }
+      .modal-box p {
+        font-size: 0.8rem;
+        color: var(--gray);
+        margin-bottom: 0.75rem;
+        line-height: 1.6;
+      }
+      .modal-name {
+        font-size: 0.9rem;
+        color: var(--text);
+        font-weight: 600;
+        margin-bottom: 1.25rem;
+      }
+      .modal-btns {
+        display: flex;
+        gap: 8px;
+      }
+      .modal-btns button {
+        flex: 1;
+      }
+
+      /* TOAST */
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--dark3);
+        border: 1px solid var(--gold);
+        color: var(--text);
+        padding: 10px 18px;
+        font-size: 0.78rem;
+        opacity: 0;
+        transition: 0.3s;
+        z-index: 9997;
+        pointer-events: none;
+        max-width: 300px;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+
+      /* PROGRESS bar saat import */
+      .import-progress {
+        background: var(--border);
+        height: 4px;
+        margin-top: 10px;
+        overflow: hidden;
+        display: none;
+      }
+      .import-progress-fill {
+        height: 100%;
+        background: var(--gold);
+        transition: width 0.3s;
+      }
+
+      /* URL Preview */
+      .url-preview {
+        font-size: 0.7rem;
+        color: var(--blue);
+        word-break: break-all;
+        margin-top: 4px;
+        opacity: 0.7;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- LOCK -->
+    <div class="lock" id="lockScreen">
+      <div class="lock-box">
+        <i class="fa-solid fa-users-gear"></i>
+        <h2>KELOLA TAMU</h2>
+        <p>Masukkan password admin untuk akses halaman ini.</p>
+        <input
+          class="lock-inp"
+          type="password"
+          id="lockPass"
+          placeholder="••••••••"
+          onkeydown="if (event.key === 'Enter') doLogin();"
+        />
+        <button class="lock-btn" onclick="doLogin()">
+          <i class="fa-solid fa-unlock"></i>&nbsp; Masuk
+        </button>
+        <div class="lock-err" id="lockErr">❌ Password salah.</div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div id="mainApp" style="display: none">
+      <div class="header">
+        <div>
+          <h1>
+            <i class="fa-solid fa-users-gear"></i> &nbsp;Kelola Tamu Undangan
+          </h1>
+          <p>Tambah · Edit · Hapus · Import · Generate Link</p>
+        </div>
+        <div class="header-links">
+          <a href="dashboard.html" class="btn btn-sm"
+            ><i class="fa-solid fa-chart-line"></i> Dashboard</a
+          >
+          <a href="generate-links.html" class="btn btn-sm" target="_blank"
+            ><i class="fa-solid fa-link"></i> Generator</a
+          >
+          <a href="index.html" class="btn btn-sm" target="_blank"
+            ><i class="fa-solid fa-eye"></i> Undangan</a
+          >
+        </div>
+      </div>
+
+      <div class="container">
+        <!-- ========== KIRI: DAFTAR TAMU ========== -->
+        <div>
+          <div class="panel">
+            <div class="panel-head">
+              <h2><i class="fa-solid fa-list"></i> &nbsp;Daftar Tamu</h2>
+              <span id="totalCount">Memuat...</span>
+            </div>
+            <div style="padding: 10px 10px 0">
+              <div class="search-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input
+                  type="text"
+                  placeholder="Cari nama tamu..."
+                  id="searchInp"
+                  oninput="doSearch(this.value)"
+                />
+              </div>
+            </div>
+            <div class="guest-list" id="guestList">
+              <div class="empty-list">
+                <i class="fa-solid fa-spinner spinner"></i>Memuat daftar tamu...
+              </div>
+            </div>
+            <div class="pag" id="listPag"></div>
+          </div>
+
+          <!-- Tambah satu nama cepat -->
+          <div class="panel" style="margin-top: 14px">
+            <div class="panel-head">
+              <h2>
+                <i class="fa-solid fa-user-plus"></i> &nbsp;Tambah Satu Tamu
+              </h2>
+            </div>
+            <div class="panel-body">
+              <div class="form-group">
+                <label>Nama Lengkap</label>
+                <input
+                  class="form-inp"
+                  type="text"
+                  id="singleName"
+                  placeholder="contoh: Budi Santoso"
+                  onkeydown="if (event.key === 'Enter') addSingle();"
+                />
+                <div class="url-preview" id="singleUrlPreview"></div>
+              </div>
+              <button
+                class="btn btn-solid"
+                style="width: 100%"
+                onclick="addSingle()"
+              >
+                <i class="fa-solid fa-plus"></i> Tambah Tamu
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== KANAN: IMPORT & TOOLS ========== -->
+        <div class="panel">
+          <div class="ptabs">
+            <button class="ptab active" onclick="switchPTab('import-wa', this)">
+              📱 Dari WA / Ketik
+            </button>
+            <button class="ptab" onclick="switchPTab('import-excel', this)">
+              📊 Dari Excel/CSV
+            </button>
+            <button class="ptab" onclick="switchPTab('import-foto', this)">
+              📸 Dari Foto/Manual
+            </button>
+            <button class="ptab" onclick="switchPTab('export', this)">
+              📤 Export Link
+            </button>
+          </div>
+
+          <!-- ===== TAB: DARI WA / KETIK ===== -->
+          <div class="ptab-content active" id="ptab-import-wa">
+            <p
+              style="
+                font-size: 0.8rem;
+                color: var(--gray);
+                margin-bottom: 14px;
+                line-height: 1.7;
+              "
+            >
+              Paste langsung nama-nama dari chat WhatsApp, notes, atau ketik
+              manual. Satu nama per baris.
+            </p>
+
+            <div class="form-group">
+              <label>Paste atau Ketik Nama (satu nama per baris)</label>
+              <textarea
+                class="form-inp"
+                id="waInput"
+                placeholder="Budi Santoso&#10;Sari Dewi&#10;Ahmad Fauzi&#10;Rizky Pratama&#10;... dst"
+                oninput="previewImport('waInput')"
+              ></textarea>
+              <div class="hint">
+                ✅ Otomatis bersihkan nomor urut, tanda baca, spasi berlebih.<br />
+                ✅ Nama duplikat & yang sudah ada di database ditandai otomatis.
+              </div>
+            </div>
+
+            <div id="waPreviewArea" style="display: none">
+              <div class="import-stats" id="waStats"></div>
+              <div class="preview-box" id="waPreview"></div>
+            </div>
+
+            <div class="import-progress" id="waProgress">
+              <div class="import-progress-fill" id="waProgressFill"></div>
+            </div>
+            <button
+              class="btn btn-solid"
+              style="margin-top: 14px; width: 100%"
+              onclick="doImport('waInput')"
+            >
+              <i class="fa-solid fa-cloud-arrow-up"></i> &nbsp;Import ke
+              Database
+            </button>
+          </div>
+
+          <!-- ===== TAB: DARI EXCEL / CSV ===== -->
+          <div class="ptab-content" id="ptab-import-excel">
+            <p
+              style="
+                font-size: 0.8rem;
+                color: var(--gray);
+                margin-bottom: 14px;
+                line-height: 1.7;
+              "
+            >
+              Buka file Excel/CSV kamu,
+              <strong style="color: var(--text)">select kolom nama</strong> →
+              copy (Ctrl+C) → paste di sini.
+            </p>
+
+            <div
+              style="
+                background: #111;
+                border: 1px solid var(--border);
+                padding: 14px;
+                margin-bottom: 14px;
+                font-size: 0.78rem;
+                line-height: 1.8;
+                color: var(--gray);
+              "
+            >
+              <strong style="color: var(--gold)">Cara dari Excel:</strong><br />
+              1. Buka file Excel di laptop<br />
+              2. Klik header kolom nama (misal kolom A)<br />
+              3. Ctrl+C (copy)<br />
+              4. Paste di kotak di bawah<br /><br />
+              <strong style="color: var(--gold)"
+                >Cara dari Google Sheets:</strong
+              ><br />
+              Sama — select kolom → Ctrl+C → paste di bawah
+            </div>
+
+            <div class="form-group">
+              <label>Paste dari Excel / Google Sheets</label>
+              <textarea
+                class="form-inp"
+                id="excelInput"
+                placeholder="Paste data Excel di sini..."
+                oninput="previewImport('excelInput')"
+              ></textarea>
+            </div>
+
+            <div id="excelPreviewArea" style="display: none">
+              <div class="import-stats" id="excelStats"></div>
+              <div class="preview-box" id="excelPreview"></div>
+            </div>
+
+            <div class="import-progress" id="excelProgress">
+              <div class="import-progress-fill" id="excelProgressFill"></div>
+            </div>
+            <button
+              class="btn btn-solid"
+              style="margin-top: 14px; width: 100%"
+              onclick="doImport('excelInput')"
+            >
+              <i class="fa-solid fa-cloud-arrow-up"></i> &nbsp;Import ke
+              Database
+            </button>
+          </div>
+
+          <!-- ===== TAB: DARI FOTO / MANUAL ===== -->
+          <div class="ptab-content" id="ptab-import-foto">
+            <div
+              style="
+                background: rgba(251, 191, 36, 0.06);
+                border: 1px solid rgba(251, 191, 36, 0.2);
+                padding: 14px;
+                margin-bottom: 16px;
+                font-size: 0.78rem;
+                line-height: 1.8;
+                color: var(--gray);
+              "
+            >
+              <strong style="color: var(--yellow)"
+                >⚠️ Customer kirim nama via foto?</strong
+              ><br />
+              Ini yang paling umum terjadi. Solusinya:<br /><br />
+              <strong style="color: var(--text)"
+                >Opsi 1 — Google Lens (gratis, cepat):</strong
+              ><br />
+              Buka foto di HP → tahan gambar → "Cari dengan Google Lens" → copy
+              teks yang terdeteksi → paste di tab WA di sebelah.<br /><br />
+              <strong style="color: var(--text)"
+                >Opsi 2 — Screenshot + Word:</strong
+              ><br />
+              Buka Word → Insert → Pictures → klik kanan → "Copy Text from
+              Picture" → paste ke tab WA.<br /><br />
+              <strong style="color: var(--text)"
+                >Opsi 3 — Ketik manual di bawah:</strong
+              ><br />
+              Kalau foto tidak terbaca, ketik langsung satu per satu di sini.
+            </div>
+
+            <div class="form-group">
+              <label>Ketik nama satu per satu (dari foto)</label>
+              <textarea
+                class="form-inp"
+                id="fotoInput"
+                placeholder="Ketik nama di sini, satu per baris..."
+                oninput="previewImport('fotoInput')"
+              ></textarea>
+            </div>
+
+            <div id="fotoPreviewArea" style="display: none">
+              <div class="import-stats" id="fotoStats"></div>
+              <div class="preview-box" id="fotoPreview"></div>
+            </div>
+
+            <div class="import-progress" id="fotoProgress">
+              <div class="import-progress-fill" id="fotoProgressFill"></div>
+            </div>
+            <button
+              class="btn btn-solid"
+              style="margin-top: 14px; width: 100%"
+              onclick="doImport('fotoInput')"
+            >
+              <i class="fa-solid fa-cloud-arrow-up"></i> &nbsp;Import ke
+              Database
+            </button>
+          </div>
+
+          <!-- ===== TAB: EXPORT LINK ===== -->
+          <div class="ptab-content" id="ptab-export">
+            <p
+              style="
+                font-size: 0.8rem;
+                color: var(--gray);
+                margin-bottom: 16px;
+                line-height: 1.7;
+              "
+            >
+              Export daftar tamu beserta link personal masing-masing untuk
+              dikirim via WA atau disimpan.
+            </p>
+
+            <div class="form-group">
+              <label>Base URL Undangan</label>
+              <input
+                class="form-inp"
+                type="text"
+                id="baseUrlExp"
+                value="https://wedding-eriel-garyn.vercel.app"
+              />
+            </div>
+
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                margin-bottom: 14px;
+              "
+            >
+              <button class="btn btn-solid" onclick="exportLinks('csv')">
+                <i class="fa-solid fa-file-csv"></i> Download CSV
+              </button>
+              <button class="btn" onclick="exportLinks('txt')">
+                <i class="fa-solid fa-file-lines"></i> Download TXT
+              </button>
+            </div>
+            <button
+              class="btn btn-green"
+              style="width: 100%"
+              onclick="exportLinks('wa')"
+            >
+              <i class="fa-brands fa-whatsapp"></i> &nbsp;Format Pesan WA (Copy
+              Semua)
+            </button>
+
+            <div id="exportResult" style="margin-top: 14px; display: none">
+              <label
+                style="
+                  font-size: 0.65rem;
+                  letter-spacing: 0.15em;
+                  text-transform: uppercase;
+                  color: var(--gray);
+                  display: block;
+                  margin-bottom: 6px;
+                "
+                >Preview Format WA (10 pertama)</label
+              >
+              <div
+                class="preview-box"
+                id="exportPreview"
+                style="
+                  white-space: pre-wrap;
+                  font-size: 0.75rem;
+                  line-height: 1.7;
+                "
+              ></div>
+              <button
+                class="btn btn-solid"
+                style="margin-top: 8px; width: 100%"
+                onclick="copyExportResult()"
+              >
+                <i class="fa-regular fa-copy"></i> Copy Semua
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELETE MODAL -->
+    <div class="modal-overlay" id="delModal">
+      <div class="modal-box">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <h3>Hapus Tamu Ini?</h3>
+        <p>
+          Tamu akan dihapus dari database. Link mereka tidak akan bisa diakses
+          lagi.
+        </p>
+        <div class="modal-name" id="delName"></div>
+        <div class="modal-btns">
+          <button class="btn" onclick="closeDelModal()">Batal</button>
+          <button class="btn btn-danger" onclick="confirmDel()">
+            <i class="fa-solid fa-trash"></i> Hapus
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      // ============================================================
+      // CONFIG
+      // ============================================================
+      const SUPABASE_URL = "https://tdlkbhzlvxovsrinhtha.supabase.co";
+      const SUPABASE_KEY = "sb_publishable_7i2Hp2kbkWmklAnaRXBHLA_uUKufVJK";
+      const ADMIN_PASS = "erielgaryn2026"; // ← Ganti kalau perlu
+      const BASE_URL = "https://wedding-eriel-garyn.vercel.app";
+
+      // ============================================================
+      // LOGIN
+      // ============================================================
+      function doLogin() {
+        if (document.getElementById("lockPass").value === ADMIN_PASS) {
+          document.getElementById("lockScreen").classList.add("gone");
+          document.getElementById("mainApp").style.display = "block";
+          loadGuests();
+          setupSingleNamePreview();
+        } else {
+          const e = document.getElementById("lockErr");
+          e.style.display = "block";
+          document.getElementById("lockPass").value = "";
+          setTimeout(() => (e.style.display = "none"), 3000);
+        }
+      }
+      document.getElementById("lockPass").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") doLogin();
+      });
+
+      // ============================================================
+      // SUPABASE
+      // ============================================================
+      async function sbGet(ep) {
+        const r = await fetch(SUPABASE_URL + "/rest/v1/" + ep, {
+          headers: {
+            apikey: SUPABASE_KEY,
+            Authorization: "Bearer " + SUPABASE_KEY,
+          },
+        });
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+      }
+      async function sbPost(table, data) {
+        const r = await fetch(SUPABASE_URL + "/rest/v1/" + table, {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_KEY,
+            Authorization: "Bearer " + SUPABASE_KEY,
+            "Content-Type": "application/json",
+            Prefer: "return=representation",
+          },
+          body: JSON.stringify(data),
+        });
+        if (!r.ok) {
+          const t = await r.text();
+          throw new Error(t);
+        }
+        const txt = await r.text();
+        return txt ? JSON.parse(txt) : null;
+      }
+      async function sbPatch(table, id, data) {
+        const r = await fetch(
+          SUPABASE_URL + "/rest/v1/" + table + "?id=eq." + id,
+          {
+            method: "PATCH",
+            headers: {
+              apikey: SUPABASE_KEY,
+              Authorization: "Bearer " + SUPABASE_KEY,
+              "Content-Type": "application/json",
+              Prefer: "return=minimal",
+            },
+            body: JSON.stringify(data),
+          },
+        );
+        if (!r.ok) throw new Error(r.status);
+        return true;
+      }
+      async function sbDelete(table, id) {
+        const r = await fetch(
+          SUPABASE_URL + "/rest/v1/" + table + "?id=eq." + id,
+          {
+            method: "DELETE",
+            headers: {
+              apikey: SUPABASE_KEY,
+              Authorization: "Bearer " + SUPABASE_KEY,
+              Prefer: "return=minimal",
+            },
+          },
+        );
+        if (!r.ok) throw new Error(r.status);
+        return true;
+      }
+
+      // ============================================================
+      // GUEST LIST
+      // ============================================================
+      let allGuests = [];
+      let filtered = [];
+      let page = 1;
+      const PER = 20;
+      let editingId = null;
+      let pendingDel = null;
+
+      async function loadGuests() {
+        try {
+          allGuests = await sbGet("guests?select=*&order=name.asc");
+          filtered = [...allGuests];
+          renderList();
+          document.getElementById("totalCount").textContent =
+            allGuests.length + " tamu";
+        } catch (e) {
+          document.getElementById("guestList").innerHTML =
+            '<div class="empty-list"><i class="fa-solid fa-exclamation-triangle"></i>Gagal load: ' +
+            e.message +
+            "</div>";
+        }
+      }
+
+      function doSearch(q) {
+        filtered = allGuests.filter((g) =>
+          g.name.toLowerCase().includes(q.toLowerCase()),
+        );
+        page = 1;
+        renderList();
+      }
+
+      function renderList() {
+        const el = document.getElementById("guestList");
+        if (filtered.length === 0) {
+          el.innerHTML =
+            '<div class="empty-list"><i class="fa-solid fa-user-slash"></i>Tidak ada tamu ditemukan.</div>';
+          document.getElementById("listPag").innerHTML = "";
+          return;
+        }
+        const start = (page - 1) * PER;
+        const items = filtered.slice(start, start + PER);
+
+        el.innerHTML = items
+          .map(
+            (g, i) => `
+    <div class="guest-item" id="gi-${g.id}">
+      <span class="guest-num">${start + i + 1}</span>
+      <span class="dot ${g.opened ? "dot-opened" : "dot-belum"}" title="${g.opened ? "Sudah buka" : "Belum buka"}"></span>
+      <span class="guest-name" id="gname-${g.id}">${esc(g.name)}</span>
+      <div class="guest-actions">
+        <button class="btn btn-sm" style="padding:3px 7px;" onclick="startEdit(${g.id},'${esc(g.name)}')" title="Edit nama">
+          <i class="fa-solid fa-pen"></i>
+        </button>
+        <button class="btn btn-sm btn-danger" style="padding:3px 7px;" onclick="openDel(${g.id},'${esc(g.name)}')" title="Hapus tamu">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  `,
+          )
+          .join("");
+
+        renderPag();
+      }
+
+      function renderPag() {
+        const total = Math.ceil(filtered.length / PER);
+        const el = document.getElementById("listPag");
+        if (total <= 1) {
+          el.innerHTML = "";
+          return;
+        }
+        let h = `<button class="pag-btn" onclick="goPage(${page - 1})" ${page === 1 ? "disabled" : ""}>←</button>`;
+        for (let i = 1; i <= total; i++) {
+          if (i === 1 || i === total || Math.abs(i - page) <= 1)
+            h += `<button class="pag-btn ${i === page ? "active" : ""}" onclick="goPage(${i})">${i}</button>`;
+          else if (Math.abs(i - page) === 2)
+            h += `<span style="color:var(--gray);font-size:0.7rem;padding:0 2px">…</span>`;
+        }
+        h += `<button class="pag-btn" onclick="goPage(${page + 1})" ${page === total ? "disabled" : ""}>→</button>`;
+        h += `<span class="pag-info">${filtered.length} tamu</span>`;
+        el.innerHTML = h;
+      }
+      function goPage(p) {
+        const t = Math.ceil(filtered.length / PER);
+        if (p < 1 || p > t) return;
+        page = p;
+        renderList();
+      }
+
+      // ============================================================
+      // ADD SINGLE
+      // ============================================================
+      function setupSingleNamePreview() {
+        document
+          .getElementById("singleName")
+          .addEventListener("input", function () {
+            const v = this.value.trim();
+            const prev = document.getElementById("singleUrlPreview");
+            prev.textContent = v
+              ? BASE_URL + "/?to=" + encodeURIComponent(v)
+              : "";
+          });
+      }
+
+      async function addSingle() {
+        const inp = document.getElementById("singleName");
+        const name = inp.value.trim();
+        if (!name) {
+          showToast("⚠️ Nama tidak boleh kosong");
+          inp.focus();
+          return;
+        }
+
+        // Cek duplikat lokal
+        if (
+          allGuests.some((g) => g.name.toLowerCase() === name.toLowerCase())
+        ) {
+          showToast('⚠️ "' + name + '" sudah ada di daftar!');
+          return;
+        }
+
+        try {
+          const res = await sbPost("guests", {
+            name: name,
+            slug: slugify(name),
+            opened: false,
+          });
+          const newGuest = Array.isArray(res) ? res[0] : res;
+          if (newGuest) allGuests.unshift(newGuest);
+          allGuests.sort((a, b) => a.name.localeCompare(b.name));
+          filtered = [...allGuests];
+          renderList();
+          document.getElementById("totalCount").textContent =
+            allGuests.length + " tamu";
+          inp.value = "";
+          document.getElementById("singleUrlPreview").textContent = "";
+          showToast("✅ " + name + " berhasil ditambahkan!");
+        } catch (e) {
+          showToast("❌ Gagal tambah: " + e.message);
+        }
+      }
+
+      // ============================================================
+      // EDIT NAMA
+      // ============================================================
+      function startEdit(id, currentName) {
+        // Batalkan edit sebelumnya jika ada
+        if (editingId) cancelEdit(editingId);
+        editingId = id;
+
+        const nameEl = document.getElementById("gname-" + id);
+        nameEl.innerHTML = `
+    <input class="edit-inp" id="editInp-${id}" value="${esc(currentName)}"
+      onkeydown="if(event.key==='Enter')saveEdit(${id}); if(event.key==='Escape')cancelEdit(${id})"
+      onclick="event.stopPropagation()"/>
+    <button class="btn btn-sm btn-green" style="padding:3px 7px;margin-left:4px;" onclick="saveEdit(${id})">
+      <i class="fa-solid fa-check"></i>
+    </button>
+    <button class="btn btn-sm" style="padding:3px 7px;" onclick="cancelEdit(${id})">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  `;
+        document.getElementById("editInp-" + id).focus();
+      }
+
+      async function saveEdit(id) {
+        const inp = document.getElementById("editInp-" + id);
+        if (!inp) return;
+        const newName = inp.value.trim();
+        const guest = allGuests.find((g) => g.id === id);
+        if (!newName) {
+          showToast("⚠️ Nama tidak boleh kosong");
+          return;
+        }
+        if (newName === guest.name) {
+          cancelEdit(id);
+          return;
+        }
+        if (
+          allGuests.some(
+            (g) =>
+              g.id !== id && g.name.toLowerCase() === newName.toLowerCase(),
+          )
+        ) {
+          showToast('⚠️ Nama "' + newName + '" sudah ada!');
+          return;
+        }
+
+        try {
+          await sbPatch("guests", id, {
+            name: newName,
+            slug: slugify(newName),
+          });
+          const idx = allGuests.findIndex((g) => g.id === id);
+          if (idx !== -1) allGuests[idx].name = newName;
+          filtered = [...allGuests];
+          renderList();
+          editingId = null;
+          showToast('✅ Nama berhasil diubah ke "' + newName + '"');
+        } catch (e) {
+          showToast("❌ Gagal edit: " + e.message);
+        }
+      }
+
+      function cancelEdit(id) {
+        const guest = allGuests.find((g) => g.id === id);
+        if (!guest) return;
+        const nameEl = document.getElementById("gname-" + id);
+        if (nameEl) nameEl.innerHTML = esc(guest.name);
+        editingId = null;
+      }
+
+      // ============================================================
+      // DELETE TAMU
+      // ============================================================
+      function openDel(id, name) {
+        pendingDel = id;
+        document.getElementById("delName").textContent = name;
+        document.getElementById("delModal").classList.add("show");
+      }
+      function closeDelModal() {
+        pendingDel = null;
+        document.getElementById("delModal").classList.remove("show");
+      }
+      async function confirmDel() {
+        if (!pendingDel) return;
+        const id = pendingDel;
+        const name = allGuests.find((g) => g.id === id)?.name || "";
+        closeDelModal();
+        try {
+          await sbDelete("guests", id);
+          allGuests = allGuests.filter((g) => g.id !== id);
+          filtered = filtered.filter((g) => g.id !== id);
+          renderList();
+          document.getElementById("totalCount").textContent =
+            allGuests.length + " tamu";
+          showToast('🗑️ "' + name + '" berhasil dihapus.');
+        } catch (e) {
+          showToast("❌ Gagal hapus: " + e.message);
+        }
+      }
+
+      // ============================================================
+      // IMPORT (WA / Excel / Manual)
+      // ============================================================
+      function parseName(raw) {
+        // Bersihkan: hapus nomor urut di depan (1. / 1) / 1- )
+        // hapus karakter tidak perlu
+        return raw
+          .replace(/^\s*\d+[\.\)\-\s]+/, "") // hapus "1. " atau "1) " di depan
+          .replace(/["""''*_#@]/g, "") // hapus karakter aneh
+          .replace(/\s+/g, " ") // spasi ganda jadi satu
+          .trim();
+      }
+
+      function previewImport(inputId) {
+        const raw = document.getElementById(inputId).value;
+        const prefix = inputId.replace("Input", "");
+        const area = document.getElementById(prefix + "PreviewArea");
+        const prev = document.getElementById(prefix + "Preview");
+        const stats = document.getElementById(prefix + "Stats");
+
+        const lines = raw
+          .split("\n")
+          .map(parseName)
+          .filter((n) => n.length > 1);
+        if (lines.length === 0) {
+          area.style.display = "none";
+          return;
+        }
+
+        const existNames = new Set(allGuests.map((g) => g.name.toLowerCase()));
+        const seen = new Set();
+        let newCount = 0,
+          dupCount = 0,
+          existCount = 0;
+
+        const html = lines
+          .map((name) => {
+            const lower = name.toLowerCase();
+            if (seen.has(lower)) {
+              dupCount++;
+              return `<span class="preview-name dup" title="Duplikat dalam list ini">⚠️ ${esc(name)}</span>`;
+            }
+            seen.add(lower);
+            if (existNames.has(lower)) {
+              existCount++;
+              return `<span class="preview-name exists" title="Sudah ada di database">📋 ${esc(name)}</span>`;
+            }
+            newCount++;
+            return `<span class="preview-name">${esc(name)}</span>`;
+          })
+          .join("");
+
+        prev.innerHTML = html;
+        stats.innerHTML = `
+    <div class="istat"><span class="istat-num" style="color:var(--green)">${newCount}</span>Baru</div>
+    <div class="istat"><span class="istat-num" style="color:var(--blue)">${existCount}</span>Sudah Ada</div>
+    <div class="istat"><span class="istat-num" style="color:var(--yellow)">${dupCount}</span>Duplikat</div>
+    <div class="istat"><span class="istat-num">${lines.length}</span>Total Baris</div>
+  `;
+        area.style.display = "block";
+      }
+
+      async function doImport(inputId) {
+        const raw = document.getElementById(inputId).value;
+        const prefix = inputId.replace("Input", "");
+        const lines = raw
+          .split("\n")
+          .map(parseName)
+          .filter((n) => n.length > 1);
+        if (lines.length === 0) {
+          showToast("⚠️ Tidak ada nama yang valid");
+          return;
+        }
+
+        const existNames = new Set(allGuests.map((g) => g.name.toLowerCase()));
+        const seen = new Set();
+
+        // Filter: hanya yang benar-benar baru
+        const toInsert = lines.filter((name) => {
+          const l = name.toLowerCase();
+          if (seen.has(l) || existNames.has(l)) return false;
+          seen.add(l);
+          return true;
+        });
+
+        if (toInsert.length === 0) {
+          showToast(
+            "ℹ️ Semua nama sudah ada di database. Tidak ada yang diimport.",
+          );
+          return;
+        }
+
+        // Tampilkan progress
+        const progWrap = document.getElementById(prefix + "Progress");
+        const progFill = document.getElementById(prefix + "ProgressFill");
+        progWrap.style.display = "block";
+        progFill.style.width = "0%";
+
+        let success = 0;
+        let failed = 0;
+
+        // Insert satu per satu agar tidak timeout, dengan progress
+        for (let i = 0; i < toInsert.length; i++) {
+          try {
+            const res = await sbPost("guests", {
+              name: toInsert[i],
+              slug: slugify(toInsert[i]),
+              opened: false,
+            });
+            const newG = Array.isArray(res) ? res[0] : res;
+            if (newG) allGuests.push(newG);
+            success++;
+          } catch (e) {
+            failed++;
+          }
+          progFill.style.width =
+            Math.round(((i + 1) / toInsert.length) * 100) + "%";
+        }
+
+        // Selesai
+        allGuests.sort((a, b) => a.name.localeCompare(b.name));
+        filtered = [...allGuests];
+        renderList();
+        document.getElementById(inputId).value = "";
+        document.getElementById(prefix + "PreviewArea").style.display = "none";
+        progWrap.style.display = "none";
+        document.getElementById("totalCount").textContent =
+          allGuests.length + " tamu";
+
+        showToast(
+          `✅ Import selesai! ${success} berhasil${failed > 0 ? ", " + failed + " gagal" : ""}.`,
+        );
+      }
+
+      // ============================================================
+      // EXPORT LINK
+      // ============================================================
+      let exportData = "";
+
+      function exportLinks(type) {
+        const base = document
+          .getElementById("baseUrlExp")
+          .value.trim()
+          .replace(/\/$/, "");
+        if (allGuests.length === 0) {
+          showToast("⚠️ Belum ada tamu");
+          return;
+        }
+
+        if (type === "csv") {
+          const h = "No,Nama,Link Personal\n";
+          const r = allGuests
+            .map(
+              (g, i) =>
+                `${i + 1},"${g.name}","${base}/?to=${encodeURIComponent(g.name)}"`,
+            )
+            .join("\n");
+          dl("link-undangan.csv", h + r, "text/csv");
+          showToast("✅ CSV berhasil didownload!");
+          return;
+        }
+
+        if (type === "txt") {
+          const r = allGuests
+            .map((g) => `${g.name}: ${base}/?to=${encodeURIComponent(g.name)}`)
+            .join("\n");
+          dl("link-undangan.txt", r, "text/plain");
+          showToast("✅ TXT berhasil didownload!");
+          return;
+        }
+
+        if (type === "wa") {
+          const msgs = allGuests.map(
+            (g) =>
+              `Assalamualaikum, *${g.name}* 🙏
+
+Kami mengundang Anda untuk hadir di pernikahan kami:
+
+💍 *Eriel & Garyn*
+📅 Sabtu, 9 Mei 2026
+
+Buka undangan Anda di sini:
+${base}/?to=${encodeURIComponent(g.name)}
+
+Terima kasih 💌`,
+          );
+          exportData = msgs.join("\n\n---\n\n");
+          const preview =
+            msgs.slice(0, 3).join("\n\n---\n\n") +
+            (allGuests.length > 3
+              ? "\n\n... dan " + (allGuests.length - 3) + " lainnya"
+              : "");
+          document.getElementById("exportPreview").textContent = preview;
+          document.getElementById("exportResult").style.display = "block";
+          showToast("✅ " + allGuests.length + " pesan WA disiapkan!");
+        }
+      }
+
+      function copyExportResult() {
+        navigator.clipboard
+          .writeText(exportData)
+          .then(() => showToast("✅ Semua pesan WA berhasil dicopy!"));
+      }
+
+      // ============================================================
+      // UTILS
+      // ============================================================
+      function slugify(n) {
+        return n
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/g, "");
+      }
+      function esc(t) {
+        const d = document.createElement("div");
+        d.appendChild(document.createTextNode(t || ""));
+        return d.innerHTML;
+      }
+      function dl(name, content, type) {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(new Blob([content], { type }));
+        a.download = name;
+        a.click();
+      }
+      function switchPTab(name, btn) {
+        document
+          .querySelectorAll(".ptab-content")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".ptab")
+          .forEach((t) => t.classList.remove("active"));
+        document.getElementById("ptab-" + name).classList.add("active");
+        btn.classList.add("active");
+      }
+      let toastT;
+      function showToast(msg) {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        clearTimeout(toastT);
+        toastT = setTimeout(() => t.classList.remove("show"), 4000);
+      }
+    </script>
+  </body>
+</html>
