@@ -132,7 +132,6 @@ openBtn.addEventListener("click", function () {
     setTimeout(triggerHeroAnimations, 100);
     initScrollReveal();
     loadMessages(); // ← load ucapan setelah konten tampil
-    startLiveMessages(); // ← mulai floating messages
   }, 800);
 });
 
@@ -318,9 +317,6 @@ if (submitBtn) {
       };
       prependMessage(msgObj);
 
-      // Juga tampilkan sebagai floating bubble
-      showFloatingBubble(name, message);
-
       // Reset form
       if (gbMessageEl) {
         gbMessageEl.value = "";
@@ -369,6 +365,15 @@ function prependMessage(msg) {
   const empty = msgListEl.querySelector("p.empty-msg");
   if (empty) empty.remove();
   msgListEl.insertBefore(createMsgEl(msg), msgListEl.firstChild);
+  // Update counter
+  const countEl = document.getElementById("messagesCount");
+  if (countEl) {
+    const current = parseInt(countEl.textContent) || 0;
+    countEl.textContent = current + 1 + " ucapan";
+  }
+  // Scroll ke atas agar pesan baru terlihat
+  const scrollEl = document.querySelector(".messages-scroll");
+  if (scrollEl) scrollEl.scrollTop = 0;
 }
 
 async function loadMessages() {
@@ -383,6 +388,8 @@ async function loadMessages() {
       return;
     }
     msgListEl.innerHTML = "";
+    const countEl = document.getElementById("messagesCount");
+    if (countEl) countEl.textContent = data.length + " ucapan";
     data.forEach(function (row) {
       msgListEl.appendChild(
         createMsgEl({
@@ -406,118 +413,7 @@ async function loadMessages() {
 }
 
 // ============================================================
-// 10. FLOATING LIVE MESSAGES
-//     Ucapan dari tamu muncul mengambang di sudut layar
-//     seperti notifikasi — tamu lain bisa lihat!
-// ============================================================
-let liveMessages = [];
-let liveIndex = 0;
-let liveInterval = null;
-let floatContainer = null;
-
-function startLiveMessages() {
-  // Buat container floating
-  floatContainer = document.createElement("div");
-  floatContainer.id = "floatContainer";
-  floatContainer.style.cssText = `
-    position: fixed;
-    bottom: 90px;
-    left: 20px;
-    z-index: 500;
-    max-width: 300px;
-    pointer-events: none;
-  `;
-  document.body.appendChild(floatContainer);
-
-  // Load pesan lalu mulai tampil bergantian
-  loadLivePool().then(function () {
-    if (liveMessages.length > 0) {
-      showNextBubble();
-      liveInterval = setInterval(showNextBubble, 6000); // tiap 6 detik
-    }
-  });
-}
-
-async function loadLivePool() {
-  try {
-    const data = await sbGet(
-      "messages?select=name,message,attend&order=created_at.desc&limit=30",
-    );
-    liveMessages = data || [];
-    // Acak urutan biar lebih natural
-    liveMessages.sort(function () {
-      return Math.random() - 0.5;
-    });
-  } catch (e) {
-    /* tidak masalah */
-  }
-}
-
-function showNextBubble() {
-  if (!liveMessages.length || !floatContainer) return;
-  const msg = liveMessages[liveIndex % liveMessages.length];
-  liveIndex++;
-  showFloatingBubble(msg.name, msg.message);
-}
-
-function showFloatingBubble(name, message) {
-  if (!floatContainer) return;
-
-  const bubble = document.createElement("div");
-  bubble.style.cssText = `
-    background: rgba(10,10,10,0.92);
-    border: 1px solid rgba(201,168,76,0.4);
-    backdrop-filter: blur(10px);
-    padding: 12px 16px;
-    margin-bottom: 10px;
-    animation: bubbleIn 0.5s ease forwards;
-    max-width: 300px;
-    pointer-events: auto;
-  `;
-  bubble.innerHTML = `
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-      <div style="width:28px;height:28px;border-radius:50%;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;color:var(--gold, #c9a84c);font-size:0.75rem;flex-shrink:0">
-        <i class="fa-solid fa-user"></i>
-      </div>
-      <span style="font-family:'Cinzel',serif;font-size:0.8rem;color:#e8c97a;font-weight:600">${esc(name)}</span>
-    </div>
-    <p style="font-family:'Cormorant Garamond',serif;font-size:0.9rem;color:rgba(245,240,232,0.75);font-style:italic;line-height:1.5;margin:0">"${esc(message.length > 80 ? message.substring(0, 80) + "…" : message)}"</p>
-  `;
-
-  // Tambahkan keyframe sekali saja
-  if (!document.getElementById("bubbleStyle")) {
-    const style = document.createElement("style");
-    style.id = "bubbleStyle";
-    style.textContent = `
-      @keyframes bubbleIn {
-        from { opacity:0; transform:translateY(20px) scale(0.95); }
-        to   { opacity:1; transform:translateY(0) scale(1); }
-      }
-      @keyframes bubbleOut {
-        from { opacity:1; transform:translateY(0); }
-        to   { opacity:0; transform:translateY(-10px); }
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  floatContainer.appendChild(bubble);
-
-  // Hilang otomatis setelah 5 detik
-  setTimeout(function () {
-    bubble.style.animation = "bubbleOut 0.4s ease forwards";
-    setTimeout(function () {
-      if (bubble.parentNode) bubble.parentNode.removeChild(bubble);
-    }, 400);
-  }, 5000);
-
-  // Maks 3 bubble sekaligus
-  const bubbles = floatContainer.children;
-  if (bubbles.length > 3) floatContainer.removeChild(bubbles[0]);
-}
-
-// ============================================================
-// 11. COPY REKENING
+// 10. COPY REKENING
 // ============================================================
 function copyText(text) {
   navigator.clipboard
@@ -537,7 +433,7 @@ function copyText(text) {
 }
 
 // ============================================================
-// 12. TOAST NOTIFICATION
+// 11. TOAST NOTIFICATION
 // ============================================================
 const toastEl = document.getElementById("toast");
 let toastTimer;
@@ -552,7 +448,7 @@ function showToast(msg) {
 }
 
 // ============================================================
-// 13. SMOOTH SCROLL
+// 12. SMOOTH SCROLL
 // ============================================================
 document.querySelectorAll('a[href^="#"]').forEach(function (a) {
   a.addEventListener("click", function (e) {
