@@ -39,11 +39,87 @@
         min-height: 100vh;
       }
 
+      /* ---- ADMIN LOGIN OVERLAY ---- */
+      .admin-lock {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.97);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+      .admin-lock.hidden {
+        display: none;
+      }
+      .lock-box {
+        background: var(--dark3);
+        border: 1px solid rgba(201, 168, 76, 0.3);
+        padding: 2.5rem;
+        text-align: center;
+        max-width: 360px;
+        width: 90%;
+      }
+      .lock-box i {
+        font-size: 2rem;
+        color: var(--gold);
+        margin-bottom: 1rem;
+        display: block;
+      }
+      .lock-box h2 {
+        font-size: 1rem;
+        color: var(--gold);
+        margin-bottom: 0.4rem;
+        letter-spacing: 0.1em;
+      }
+      .lock-box p {
+        font-size: 0.78rem;
+        color: var(--gray);
+        margin-bottom: 1.5rem;
+      }
+      .lock-input {
+        width: 100%;
+        background: #111;
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 10px 14px;
+        font-family: "Inter", sans-serif;
+        font-size: 0.9rem;
+        outline: none;
+        margin-bottom: 1rem;
+        text-align: center;
+        letter-spacing: 0.2em;
+      }
+      .lock-input:focus {
+        border-color: var(--gold);
+      }
+      .lock-btn {
+        width: 100%;
+        padding: 11px;
+        background: var(--gold);
+        color: #000;
+        border: none;
+        font-family: "Inter", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        cursor: pointer;
+      }
+      .lock-btn:hover {
+        background: var(--gold2);
+      }
+      .lock-error {
+        color: var(--red);
+        font-size: 0.75rem;
+        margin-top: 0.75rem;
+        display: none;
+      }
+
       /* ---- HEADER ---- */
       .header {
         background: var(--dark2);
         border-bottom: 1px solid var(--border);
-        padding: 16px 24px;
+        padding: 14px 24px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -52,33 +128,33 @@
         z-index: 100;
       }
       .header-left h1 {
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 600;
         color: var(--gold);
       }
       .header-left p {
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         color: var(--gray);
         margin-top: 2px;
       }
       .header-right {
         display: flex;
-        gap: 10px;
+        gap: 8px;
         align-items: center;
       }
 
       .btn {
-        padding: 8px 18px;
+        padding: 7px 16px;
         border: 1px solid var(--gold);
         background: transparent;
         color: var(--gold);
         font-family: "Inter", sans-serif;
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         font-weight: 500;
         cursor: pointer;
         letter-spacing: 0.05em;
         transition: 0.2s;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         gap: 6px;
         text-decoration: none;
@@ -88,8 +164,16 @@
         color: #000;
       }
       .btn-sm {
-        padding: 5px 12px;
-        font-size: 0.7rem;
+        padding: 4px 10px;
+        font-size: 0.68rem;
+      }
+      .btn-danger {
+        border-color: var(--red);
+        color: var(--red);
+      }
+      .btn-danger:hover {
+        background: var(--red);
+        color: #fff;
       }
       .btn-solid {
         background: var(--gold);
@@ -100,11 +184,11 @@
       }
 
       .live-dot {
-        width: 8px;
-        height: 8px;
+        width: 7px;
+        height: 7px;
         border-radius: 50%;
         background: var(--green);
-        animation: pulse 1.5s ease-in-out infinite;
+        animation: pulse 1.5s infinite;
         display: inline-block;
       }
       @keyframes pulse {
@@ -117,97 +201,93 @@
         }
       }
 
-      /* ---- MAIN LAYOUT ---- */
+      /* ---- CONTAINER ---- */
       .container {
         max-width: 1280px;
         margin: 0 auto;
         padding: 24px;
       }
 
-      /* ---- STATS CARDS ---- */
+      /* ---- STATS ---- */
       .stats-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-        margin-bottom: 24px;
+        gap: 14px;
+        margin-bottom: 20px;
       }
       .stat-card {
         background: var(--dark3);
         border: 1px solid var(--border);
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
+        padding: 18px;
       }
-      .stat-card .stat-icon {
-        font-size: 1.4rem;
-        margin-bottom: 4px;
+      .stat-icon {
+        font-size: 1.3rem;
+        margin-bottom: 6px;
       }
-      .stat-card .stat-num {
-        font-size: 2rem;
+      .stat-num {
+        font-size: 1.8rem;
         font-weight: 700;
         line-height: 1;
       }
-      .stat-card .stat-label {
-        font-size: 0.7rem;
+      .stat-label {
+        font-size: 0.65rem;
         color: var(--gray);
         letter-spacing: 0.1em;
         text-transform: uppercase;
-      }
-      .stat-card .stat-sub {
-        font-size: 0.72rem;
-        color: var(--gray);
         margin-top: 4px;
       }
-      .stat-gold .stat-num {
+      .stat-sub {
+        font-size: 0.7rem;
+        color: var(--gray);
+        margin-top: 3px;
+      }
+      .gold {
         color: var(--gold);
       }
-      .stat-green .stat-num {
+      .green {
         color: var(--green);
       }
-      .stat-red .stat-num {
+      .red {
         color: var(--red);
       }
-      .stat-blue .stat-num {
+      .blue {
         color: var(--blue);
       }
 
-      /* ---- PROGRESS BAR ---- */
+      /* ---- PROGRESS ---- */
       .progress-section {
         background: var(--dark3);
         border: 1px solid var(--border);
-        padding: 20px;
-        margin-bottom: 24px;
+        padding: 18px;
+        margin-bottom: 20px;
       }
       .progress-section h3 {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
         color: var(--gray);
-        letter-spacing: 0.1em;
+        letter-spacing: 0.15em;
         text-transform: uppercase;
-        margin-bottom: 16px;
-      }
-      .progress-item {
         margin-bottom: 14px;
       }
-      .progress-header {
+      .progress-item {
+        margin-bottom: 12px;
+      }
+      .progress-row {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 6px;
-      }
-      .progress-label {
-        font-size: 0.82rem;
+        margin-bottom: 5px;
+        font-size: 0.8rem;
       }
       .progress-val {
-        font-size: 0.82rem;
         color: var(--gray);
+        font-size: 0.78rem;
       }
-      .progress-bar-bg {
-        background: #222;
-        height: 6px;
+      .bar-bg {
+        background: #1e1e1e;
+        height: 5px;
         border-radius: 3px;
         overflow: hidden;
       }
-      .progress-bar-fill {
+      .bar-fill {
         height: 100%;
         border-radius: 3px;
         transition: width 0.8s ease;
@@ -216,22 +296,21 @@
       /* ---- TABS ---- */
       .tabs {
         display: flex;
-        gap: 0;
         border-bottom: 1px solid var(--border);
-        margin-bottom: 20px;
+        margin-bottom: 18px;
       }
       .tab {
-        padding: 10px 20px;
-        font-size: 0.8rem;
+        padding: 9px 18px;
+        font-size: 0.78rem;
         cursor: pointer;
         border-bottom: 2px solid transparent;
         color: var(--gray);
-        transition: 0.2s;
         background: none;
         border-top: none;
         border-left: none;
         border-right: none;
         font-family: "Inter", sans-serif;
+        transition: 0.2s;
       }
       .tab.active {
         color: var(--gold);
@@ -240,7 +319,6 @@
       .tab:hover:not(.active) {
         color: var(--text);
       }
-
       .tab-content {
         display: none;
       }
@@ -248,8 +326,8 @@
         display: block;
       }
 
-      /* ---- TABLE ---- */
-      .table-header {
+      /* ---- TOOLBAR ---- */
+      .toolbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -257,32 +335,36 @@
         flex-wrap: wrap;
         gap: 10px;
       }
-      .table-header h2 {
-        font-size: 0.9rem;
+      .toolbar h2 {
+        font-size: 0.88rem;
         font-weight: 600;
       }
-      .search-box {
+      .toolbar-right {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .search-input {
         background: var(--dark3);
         border: 1px solid var(--border);
         color: var(--text);
-        padding: 7px 14px;
+        padding: 6px 12px;
         font-family: "Inter", sans-serif;
-        font-size: 0.82rem;
+        font-size: 0.8rem;
         outline: none;
-        min-width: 220px;
+        min-width: 200px;
       }
-      .search-box:focus {
+      .search-input:focus {
         border-color: var(--gold);
       }
-
       .filter-btns {
         display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
+        gap: 5px;
       }
       .filter-btn {
-        padding: 4px 12px;
-        font-size: 0.7rem;
+        padding: 4px 10px;
+        font-size: 0.68rem;
         cursor: pointer;
         background: var(--dark3);
         border: 1px solid var(--border);
@@ -294,43 +376,60 @@
         border-color: var(--gold);
         color: var(--gold);
       }
-      .filter-btn:hover {
-        border-color: #555;
-        color: var(--text);
-      }
 
+      /* ---- TABLE ---- */
+      .table-wrap {
+        overflow-x: auto;
+      }
       table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 0.82rem;
+        font-size: 0.8rem;
       }
       thead tr {
         background: var(--dark3);
       }
       th {
-        padding: 10px 12px;
+        padding: 9px 12px;
         text-align: left;
-        font-size: 0.65rem;
+        font-size: 0.62rem;
         letter-spacing: 0.15em;
         text-transform: uppercase;
         color: var(--gray);
-        font-weight: 500;
         border-bottom: 1px solid var(--border);
       }
       td {
-        padding: 10px 12px;
+        padding: 9px 12px;
         border-bottom: 1px solid #161616;
+        vertical-align: middle;
       }
       tr:hover td {
         background: #111;
       }
+      .num-col {
+        color: var(--gray);
+        font-size: 0.75rem;
+      }
+      .time-small {
+        font-size: 0.7rem;
+        color: var(--gray);
+      }
 
+      /* badges */
       .badge {
         display: inline-block;
-        padding: 3px 10px;
-        font-size: 0.65rem;
+        padding: 2px 9px;
+        font-size: 0.63rem;
         border-radius: 2px;
         font-weight: 500;
+      }
+      .badge-opened {
+        background: rgba(96, 165, 250, 0.12);
+        color: var(--blue);
+      }
+      .badge-belum {
+        background: rgba(100, 100, 100, 0.1);
+        color: var(--gray);
       }
       .badge-hadir {
         background: rgba(74, 222, 128, 0.12);
@@ -344,89 +443,67 @@
         background: rgba(251, 191, 36, 0.12);
         color: var(--yellow);
       }
-      .badge-opened {
-        background: rgba(96, 165, 250, 0.12);
-        color: var(--blue);
-      }
-      .badge-belum {
-        background: rgba(100, 100, 100, 0.12);
-        color: var(--gray);
-      }
 
-      .time-ago {
-        font-size: 0.72rem;
-        color: var(--gray);
-      }
-
-      /* ---- MESSAGE CARD ---- */
+      /* ---- MESSAGE CARDS ---- */
       .msg-card {
         background: var(--dark3);
         border: 1px solid var(--border);
-        padding: 16px;
-        margin-bottom: 10px;
+        padding: 14px 16px;
+        margin-bottom: 8px;
         transition: 0.2s;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
       }
       .msg-card:hover {
         border-color: #333;
+      }
+      .msg-body {
+        flex: 1;
+        min-width: 0;
       }
       .msg-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
         flex-wrap: wrap;
         gap: 6px;
       }
       .msg-name {
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.88rem;
         color: var(--gold2);
       }
+      .msg-meta {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
       .msg-text {
-        font-size: 0.88rem;
+        font-size: 0.85rem;
         color: #aaa;
         font-style: italic;
         line-height: 1.6;
-        margin-bottom: 6px;
+        word-break: break-word;
       }
       .msg-time {
-        font-size: 0.68rem;
+        font-size: 0.65rem;
         color: var(--gray);
+        margin-top: 5px;
       }
-
-      /* ---- EMPTY STATE ---- */
-      .empty {
-        text-align: center;
-        padding: 3rem;
-        color: var(--gray);
-        font-size: 0.88rem;
-      }
-      .empty i {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-        display: block;
-      }
-
-      /* ---- LOADING ---- */
-      .loading {
-        text-align: center;
-        padding: 3rem;
-        color: var(--gray);
-      }
-      .loading i {
-        animation: spin 1s linear infinite;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
+      .msg-actions {
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+        align-items: flex-start;
       }
 
       /* ---- PAGINATION ---- */
       .pagination {
         display: flex;
         gap: 4px;
-        margin-top: 16px;
+        margin-top: 14px;
         flex-wrap: wrap;
         align-items: center;
       }
@@ -434,8 +511,8 @@
         background: var(--dark3);
         border: 1px solid var(--border);
         color: var(--gray);
-        padding: 5px 11px;
-        font-size: 0.75rem;
+        padding: 4px 10px;
+        font-size: 0.72rem;
         cursor: pointer;
         font-family: "Inter", sans-serif;
       }
@@ -449,8 +526,84 @@
       }
       .page-info {
         color: var(--gray);
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         margin-left: auto;
+      }
+
+      /* ---- EMPTY/LOADING ---- */
+      .empty {
+        text-align: center;
+        padding: 2.5rem;
+        color: var(--gray);
+        font-size: 0.85rem;
+      }
+      .empty i {
+        font-size: 1.8rem;
+        display: block;
+        margin-bottom: 0.75rem;
+      }
+      .loading {
+        text-align: center;
+        padding: 2.5rem;
+        color: var(--gray);
+      }
+
+      /* ---- CONFIRM MODAL ---- */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 8000;
+      }
+      .modal-overlay.show {
+        display: flex;
+      }
+      .modal-box {
+        background: var(--dark3);
+        border: 1px solid rgba(248, 113, 113, 0.3);
+        padding: 2rem;
+        max-width: 380px;
+        width: 90%;
+        text-align: center;
+      }
+      .modal-box i {
+        font-size: 1.8rem;
+        color: var(--red);
+        display: block;
+        margin-bottom: 0.75rem;
+      }
+      .modal-box h3 {
+        color: var(--red);
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+      }
+      .modal-box p {
+        font-size: 0.82rem;
+        color: var(--gray);
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+      }
+      .modal-box .preview {
+        background: #111;
+        border: 1px solid var(--border);
+        padding: 10px 14px;
+        font-size: 0.8rem;
+        color: #aaa;
+        font-style: italic;
+        margin-bottom: 1.5rem;
+        text-align: left;
+        max-height: 80px;
+        overflow: hidden;
+      }
+      .modal-btns {
+        display: flex;
+        gap: 10px;
+      }
+      .modal-btns button {
+        flex: 1;
       }
 
       /* ---- TOAST ---- */
@@ -462,293 +615,394 @@
         border: 1px solid var(--gold);
         color: var(--text);
         padding: 10px 18px;
-        font-size: 0.8rem;
+        font-size: 0.78rem;
         opacity: 0;
         transition: 0.3s;
-        z-index: 999;
+        z-index: 9998;
         pointer-events: none;
       }
       .toast.show {
         opacity: 1;
       }
 
-      /* ---- RESPONSIVE ---- */
+      /* ---- COUNTDOWN in header ---- */
+      .countdown-mini {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        font-size: 0.7rem;
+        color: var(--gold);
+        font-family: "Inter", sans-serif;
+      }
+      .cd-item {
+        text-align: center;
+      }
+      .cd-num {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--gold);
+      }
+      .cd-label {
+        font-size: 0.55rem;
+        color: var(--gray);
+        display: block;
+      }
+      .cd-sep {
+        color: var(--gold);
+        opacity: 0.5;
+        font-size: 0.75rem;
+        align-self: flex-start;
+        margin-top: 2px;
+      }
+
       @media (max-width: 768px) {
         .stats-grid {
           grid-template-columns: repeat(2, 1fr);
         }
         .container {
-          padding: 16px;
+          padding: 14px;
         }
         .header {
-          padding: 12px 16px;
+          padding: 10px 14px;
         }
-      }
-      @media (max-width: 480px) {
-        .stats-grid {
-          grid-template-columns: 1fr 1fr;
+        .countdown-mini {
+          display: none;
         }
       }
     </style>
   </head>
   <body>
-    <!-- HEADER -->
-    <div class="header">
-      <div class="header-left">
-        <h1>📊 Dashboard Monitor</h1>
-        <p>Eriel & Garyn Wedding — Real-time tracking</p>
-      </div>
-      <div class="header-right">
-        <span class="live-dot"></span>
-        <span style="font-size: 0.72rem; color: var(--gray)" id="lastUpdate"
-          >Memuat...</span
-        >
-        <button class="btn btn-sm" onclick="loadAll()">
-          <i class="fa-solid fa-rotate-right"></i> Refresh
+    <!-- ======================== ADMIN LOCK ======================== -->
+    <div class="admin-lock" id="adminLock">
+      <div class="lock-box">
+        <i class="fa-solid fa-lock"></i>
+        <h2>ADMIN DASHBOARD</h2>
+        <p>
+          Masukkan password admin untuk masuk.<br />Area ini hanya untuk
+          pengelola undangan.
+        </p>
+        <input
+          class="lock-input"
+          type="password"
+          id="adminPass"
+          placeholder="••••••••"
+          onkeydown="if (event.key === 'Enter') checkPass();"
+        />
+        <button class="lock-btn" onclick="checkPass()">
+          <i class="fa-solid fa-unlock"></i> &nbsp;MASUK
         </button>
-        <a href="index.html" class="btn btn-sm" target="_blank"
-          ><i class="fa-solid fa-eye"></i> Lihat Undangan</a
-        >
+        <div class="lock-error" id="lockError">
+          ❌ Password salah. Coba lagi.
+        </div>
       </div>
     </div>
 
-    <div class="container">
-      <!-- STATS -->
-      <div class="stats-grid">
-        <div class="stat-card stat-gold">
-          <div class="stat-icon">👥</div>
-          <div class="stat-num" id="statTotal">—</div>
-          <div class="stat-label">Total Tamu Terdaftar</div>
+    <!-- ======================== MAIN DASHBOARD ======================== -->
+    <div id="dashboardMain" style="display: none">
+      <div class="header">
+        <div class="header-left">
+          <h1>📊 Dashboard Monitor — Eriel & Garyn</h1>
+          <p>Real-time tracking undangan pernikahan</p>
         </div>
-        <div class="stat-card stat-blue">
-          <div class="stat-icon">📬</div>
-          <div class="stat-num" id="statOpened">—</div>
-          <div class="stat-label">Sudah Buka Undangan</div>
-          <div class="stat-sub" id="statOpenedPct">— %</div>
-        </div>
-        <div class="stat-card stat-green">
-          <div class="stat-icon">✅</div>
-          <div class="stat-num" id="statHadir">—</div>
-          <div class="stat-label">Konfirmasi Hadir</div>
-        </div>
-        <div class="stat-card stat-red">
-          <div class="stat-icon">💬</div>
-          <div class="stat-num" id="statMessages">—</div>
-          <div class="stat-label">Total Ucapan Masuk</div>
+        <div class="header-right">
+          <!-- Mini Countdown -->
+          <div class="countdown-mini" id="cdMini">
+            <div class="cd-item">
+              <span class="cd-num" id="cdD">--</span
+              ><span class="cd-label">hari</span>
+            </div>
+            <span class="cd-sep">:</span>
+            <div class="cd-item">
+              <span class="cd-num" id="cdH">--</span
+              ><span class="cd-label">jam</span>
+            </div>
+            <span class="cd-sep">:</span>
+            <div class="cd-item">
+              <span class="cd-num" id="cdM">--</span
+              ><span class="cd-label">mnt</span>
+            </div>
+            <span class="cd-sep">:</span>
+            <div class="cd-item">
+              <span class="cd-num" id="cdS">--</span
+              ><span class="cd-label">dtk</span>
+            </div>
+          </div>
+          <span class="live-dot"></span>
+          <span style="font-size: 0.7rem; color: var(--gray)" id="lastUpdate"
+            >--</span
+          >
+          <button class="btn btn-sm" onclick="loadAll()">
+            <i class="fa-solid fa-rotate-right"></i> Refresh
+          </button>
+          <a href="index.html" class="btn btn-sm" target="_blank"
+            ><i class="fa-solid fa-eye"></i> Undangan</a
+          >
         </div>
       </div>
 
-      <!-- PROGRESS -->
-      <div class="progress-section">
-        <h3>Ringkasan Kehadiran</h3>
-        <div class="progress-item">
-          <div class="progress-header">
-            <span class="progress-label">✅ Hadir</span>
-            <span class="progress-val" id="pctHadir">0 orang (0%)</span>
+      <div class="container">
+        <!-- STATS -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-num gold" id="statTotal">—</div>
+            <div class="stat-label">Total Tamu Buka</div>
+            <div class="stat-sub" id="statTotalSub">dari estimasi undangan</div>
           </div>
-          <div class="progress-bar-bg">
-            <div
-              class="progress-bar-fill"
-              id="barHadir"
-              style="width: 0%; background: var(--green)"
-            ></div>
+          <div class="stat-card">
+            <div class="stat-icon">📬</div>
+            <div class="stat-num blue" id="statOpened">—</div>
+            <div class="stat-label">Sudah Buka Undangan</div>
+            <div class="stat-sub" id="statOpenedPct">—</div>
           </div>
-        </div>
-        <div class="progress-item">
-          <div class="progress-header">
-            <span class="progress-label">❌ Tidak Hadir</span>
-            <span class="progress-val" id="pctTidak">0 orang (0%)</span>
+          <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-num green" id="statHadir">—</div>
+            <div class="stat-label">Konfirmasi Hadir</div>
           </div>
-          <div class="progress-bar-bg">
-            <div
-              class="progress-bar-fill"
-              id="barTidak"
-              style="width: 0%; background: var(--red)"
-            ></div>
+          <div class="stat-card">
+            <div class="stat-icon">💬</div>
+            <div class="stat-num red" id="statMessages">—</div>
+            <div class="stat-label">Total Ucapan Masuk</div>
           </div>
         </div>
-        <div class="progress-item">
-          <div class="progress-header">
-            <span class="progress-label">🤔 Belum Pasti</span>
-            <span class="progress-val" id="pctMungkin">0 orang (0%)</span>
-          </div>
-          <div class="progress-bar-bg">
-            <div
-              class="progress-bar-fill"
-              id="barMungkin"
-              style="width: 0%; background: var(--yellow)"
-            ></div>
-          </div>
-        </div>
-      </div>
 
-      <!-- TABS -->
-      <div class="tabs">
-        <button class="tab active" onclick="switchTab('guests', this)">
-          <i class="fa-solid fa-users"></i> Tamu Buka
-        </button>
-        <button class="tab" onclick="switchTab('messages', this)">
-          <i class="fa-solid fa-comments"></i> Ucapan & RSVP
-        </button>
-        <button class="tab" onclick="switchTab('export', this)">
-          <i class="fa-solid fa-download"></i> Export
-        </button>
-      </div>
+        <!-- PROGRESS -->
+        <div class="progress-section">
+          <h3>Ringkasan Kehadiran (dari ucapan masuk)</h3>
+          <div class="progress-item">
+            <div class="progress-row">
+              <span>✅ Hadir</span
+              ><span class="progress-val" id="pctHadir">0 (0%)</span>
+            </div>
+            <div class="bar-bg">
+              <div
+                class="bar-fill"
+                id="barHadir"
+                style="width: 0%; background: var(--green)"
+              ></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-row">
+              <span>❌ Tidak Hadir</span
+              ><span class="progress-val" id="pctTidak">0 (0%)</span>
+            </div>
+            <div class="bar-bg">
+              <div
+                class="bar-fill"
+                id="barTidak"
+                style="width: 0%; background: var(--red)"
+              ></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-row">
+              <span>🤔 Belum Pasti</span
+              ><span class="progress-val" id="pctMungkin">0 (0%)</span>
+            </div>
+            <div class="bar-bg">
+              <div
+                class="bar-fill"
+                id="barMungkin"
+                style="width: 0%; background: var(--yellow)"
+              ></div>
+            </div>
+          </div>
+        </div>
 
-      <!-- TAB: GUESTS -->
-      <div class="tab-content active" id="tab-guests">
-        <div class="table-header">
-          <h2>Tamu yang Sudah Buka Undangan</h2>
+        <!-- TABS -->
+        <div class="tabs">
+          <button class="tab active" onclick="switchTab('guests', this)">
+            <i class="fa-solid fa-users"></i> &nbsp;Tamu Tracking
+          </button>
+          <button class="tab" onclick="switchTab('messages', this)">
+            <i class="fa-solid fa-comments"></i> &nbsp;Ucapan & RSVP
+          </button>
+          <button class="tab" onclick="switchTab('export', this)">
+            <i class="fa-solid fa-download"></i> &nbsp;Export
+          </button>
+        </div>
+
+        <!-- TAB: GUESTS -->
+        <div class="tab-content active" id="tab-guests">
+          <div class="toolbar">
+            <h2>Tamu yang Sudah Buka Undangan</h2>
+            <div class="toolbar-right">
+              <input
+                class="search-input"
+                type="text"
+                placeholder="🔍 Cari nama..."
+                oninput="filterGuests(this.value)"
+              />
+            </div>
+          </div>
+          <div class="table-wrap" id="guestsContent">
+            <div class="loading">
+              <i class="fa-solid fa-spinner fa-spin"></i> &nbsp;Memuat data
+              tamu...
+            </div>
+          </div>
+          <div class="pagination" id="guestPagination"></div>
+        </div>
+
+        <!-- TAB: MESSAGES -->
+        <div class="tab-content" id="tab-messages">
+          <div class="toolbar">
+            <h2>Ucapan & Konfirmasi Kehadiran</h2>
+            <div class="toolbar-right">
+              <div class="filter-btns">
+                <button
+                  class="filter-btn active"
+                  onclick="filterMsg('all', this)"
+                >
+                  Semua
+                </button>
+                <button class="filter-btn" onclick="filterMsg('hadir', this)">
+                  ✅ Hadir
+                </button>
+                <button
+                  class="filter-btn"
+                  onclick="filterMsg('tidak-hadir', this)"
+                >
+                  ❌ Tidak
+                </button>
+                <button class="filter-btn" onclick="filterMsg('mungkin', this)">
+                  🤔 Belum Pasti
+                </button>
+              </div>
+            </div>
+          </div>
+          <div id="messagesContent">
+            <div class="loading">
+              <i class="fa-solid fa-spinner fa-spin"></i> &nbsp;Memuat ucapan...
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: EXPORT -->
+        <div class="tab-content" id="tab-export">
+          <h2 style="font-size: 0.88rem; margin-bottom: 18px">Export Data</h2>
           <div
             style="
-              display: flex;
-              gap: 8px;
-              flex-wrap: wrap;
-              align-items: center;
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+              gap: 14px;
             "
           >
-            <input
-              class="search-box"
-              type="text"
-              placeholder="🔍 Cari nama..."
-              oninput="filterGuests(this.value)"
-            />
-          </div>
-        </div>
-
-        <div id="guestsContent">
-          <div class="loading">
-            <i class="fa-solid fa-spinner"></i><br /><br />Memuat data tamu...
-          </div>
-        </div>
-        <div class="pagination" id="guestPagination"></div>
-      </div>
-
-      <!-- TAB: MESSAGES -->
-      <div class="tab-content" id="tab-messages">
-        <div class="table-header">
-          <h2>Ucapan & Konfirmasi Kehadiran</h2>
-          <div class="filter-btns">
-            <button
-              class="filter-btn active"
-              onclick="filterMessages('all', this)"
-            >
-              Semua
-            </button>
-            <button class="filter-btn" onclick="filterMessages('hadir', this)">
-              ✅ Hadir
-            </button>
-            <button
-              class="filter-btn"
-              onclick="filterMessages('tidak-hadir', this)"
-            >
-              ❌ Tidak
-            </button>
-            <button
-              class="filter-btn"
-              onclick="filterMessages('mungkin', this)"
-            >
-              🤔 Belum Pasti
-            </button>
-          </div>
-        </div>
-        <div id="messagesContent">
-          <div class="loading">
-            <i class="fa-solid fa-spinner"></i><br /><br />Memuat ucapan...
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB: EXPORT -->
-      <div class="tab-content" id="tab-export">
-        <h2 style="font-size: 0.9rem; margin-bottom: 20px">Export Data</h2>
-        <div
-          style="
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
-          "
-        >
-          <div
-            style="
-              background: var(--dark3);
-              border: 1px solid var(--border);
-              padding: 20px;
-            "
-          >
-            <h3
-              style="font-size: 0.9rem; color: var(--gold); margin-bottom: 8px"
-            >
-              <i class="fa-solid fa-users"></i> Data Tamu
-            </h3>
-            <p
+            <div
               style="
-                font-size: 0.8rem;
-                color: var(--gray);
-                margin-bottom: 16px;
-                line-height: 1.6;
+                background: var(--dark3);
+                border: 1px solid var(--border);
+                padding: 18px;
               "
             >
-              Export semua tamu yang sudah buka undangan beserta waktu aksesnya.
-            </p>
-            <button class="btn btn-solid" onclick="exportGuestsCSV()">
-              <i class="fa-solid fa-file-csv"></i> Download CSV Tamu
-            </button>
-          </div>
-
-          <div
-            style="
-              background: var(--dark3);
-              border: 1px solid var(--border);
-              padding: 20px;
-            "
-          >
-            <h3
-              style="font-size: 0.9rem; color: var(--gold); margin-bottom: 8px"
-            >
-              <i class="fa-solid fa-comments"></i> Ucapan & RSVP
-            </h3>
-            <p
+              <h3
+                style="
+                  font-size: 0.85rem;
+                  color: var(--gold);
+                  margin-bottom: 6px;
+                "
+              >
+                <i class="fa-solid fa-users"></i> Data Tamu Tracking
+              </h3>
+              <p
+                style="
+                  font-size: 0.78rem;
+                  color: var(--gray);
+                  margin-bottom: 14px;
+                  line-height: 1.6;
+                "
+              >
+                Semua tamu yang sudah buka undangan beserta waktu aksesnya.
+              </p>
+              <button class="btn btn-solid btn-sm" onclick="exportGuestsCSV()">
+                <i class="fa-solid fa-file-csv"></i> Download CSV Tamu
+              </button>
+            </div>
+            <div
               style="
-                font-size: 0.8rem;
-                color: var(--gray);
-                margin-bottom: 16px;
-                line-height: 1.6;
+                background: var(--dark3);
+                border: 1px solid var(--border);
+                padding: 18px;
               "
             >
-              Export semua ucapan dan konfirmasi kehadiran tamu.
-            </p>
-            <button class="btn btn-solid" onclick="exportMessagesCSV()">
-              <i class="fa-solid fa-file-csv"></i> Download CSV Ucapan
-            </button>
-          </div>
-
-          <div
-            style="
-              background: var(--dark3);
-              border: 1px solid var(--border);
-              padding: 20px;
-            "
-          >
-            <h3
-              style="font-size: 0.9rem; color: var(--gold); margin-bottom: 8px"
-            >
-              <i class="fa-solid fa-list"></i> Konfirmasi Hadir
-            </h3>
-            <p
+              <h3
+                style="
+                  font-size: 0.85rem;
+                  color: var(--gold);
+                  margin-bottom: 6px;
+                "
+              >
+                <i class="fa-solid fa-comments"></i> Semua Ucapan
+              </h3>
+              <p
+                style="
+                  font-size: 0.78rem;
+                  color: var(--gray);
+                  margin-bottom: 14px;
+                  line-height: 1.6;
+                "
+              >
+                Export semua ucapan dan konfirmasi kehadiran tamu.
+              </p>
+              <button
+                class="btn btn-solid btn-sm"
+                onclick="exportMessagesCSV()"
+              >
+                <i class="fa-solid fa-file-csv"></i> Download CSV Ucapan
+              </button>
+            </div>
+            <div
               style="
-                font-size: 0.8rem;
-                color: var(--gray);
-                margin-bottom: 16px;
-                line-height: 1.6;
+                background: var(--dark3);
+                border: 1px solid var(--border);
+                padding: 18px;
               "
             >
-              Hanya nama-nama yang konfirmasi hadir saja.
-            </p>
-            <button class="btn btn-solid" onclick="exportHadirCSV()">
-              <i class="fa-solid fa-file-csv"></i> Download CSV Hadir
-            </button>
+              <h3
+                style="
+                  font-size: 0.85rem;
+                  color: var(--gold);
+                  margin-bottom: 6px;
+                "
+              >
+                <i class="fa-solid fa-list-check"></i> Konfirmasi Hadir
+              </h3>
+              <p
+                style="
+                  font-size: 0.78rem;
+                  color: var(--gray);
+                  margin-bottom: 14px;
+                  line-height: 1.6;
+                "
+              >
+                Hanya nama yang konfirmasi hadir — untuk daftar tamu fisik.
+              </p>
+              <button class="btn btn-solid btn-sm" onclick="exportHadirCSV()">
+                <i class="fa-solid fa-file-csv"></i> Download CSV Hadir
+              </button>
+            </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIRM DELETE MODAL -->
+    <div class="modal-overlay" id="deleteModal">
+      <div class="modal-box">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <h3>Hapus Ucapan Ini?</h3>
+        <p>
+          Ucapan akan dihapus permanen dari database dan tidak bisa
+          dikembalikan.
+        </p>
+        <div class="preview" id="deletePreview"></div>
+        <div class="modal-btns">
+          <button class="btn" onclick="closeDeleteModal()">Batal</button>
+          <button class="btn btn-danger" onclick="confirmDelete()">
+            <i class="fa-solid fa-trash"></i> Hapus Permanen
+          </button>
         </div>
       </div>
     </div>
@@ -757,24 +1011,96 @@
 
     <script>
       // ============================================================
-      // KONFIGURASI — Sama dengan main.js
+      // CONFIG
       // ============================================================
       const SUPABASE_URL = "https://tdlkbhzlvxovsrinhtha.supabase.co";
       const SUPABASE_KEY = "sb_publishable_7i2Hp2kbkWmklAnaRXBHLA_uUKufVJK";
+      const ADMIN_PASS = "erielgaryn2026"; // ← Ganti password ini!
+      const WEDDING_DATE = "2026-05-09T08:00:00";
 
-      async function sbFetch(endpoint, options = {}) {
-        const res = await fetch(SUPABASE_URL + "/rest/v1/" + endpoint, {
-          ...options,
+      // ============================================================
+      // ADMIN LOGIN
+      // ============================================================
+      function checkPass() {
+        const val = document.getElementById("adminPass").value;
+        if (val === ADMIN_PASS) {
+          document.getElementById("adminLock").classList.add("hidden");
+          document.getElementById("dashboardMain").style.display = "block";
+          loadAll();
+          startCountdown();
+          // Auto refresh 30 detik
+          setInterval(loadAll, 30000);
+        } else {
+          const err = document.getElementById("lockError");
+          err.style.display = "block";
+          document.getElementById("adminPass").value = "";
+          document.getElementById("adminPass").focus();
+          setTimeout(function () {
+            err.style.display = "none";
+          }, 3000);
+        }
+      }
+      document
+        .getElementById("adminPass")
+        .addEventListener("keydown", function (e) {
+          if (e.key === "Enter") checkPass();
+        });
+
+      // ============================================================
+      // SUPABASE HELPERS
+      // ============================================================
+      async function sbGet(ep) {
+        const r = await fetch(SUPABASE_URL + "/rest/v1/" + ep, {
           headers: {
             apikey: SUPABASE_KEY,
             Authorization: "Bearer " + SUPABASE_KEY,
-            "Content-Type": "application/json",
-            ...(options.headers || {}),
           },
         });
-        if (!res.ok) throw new Error("Error " + res.status);
-        const text = await res.text();
-        return text ? JSON.parse(text) : [];
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+      }
+      async function sbDelete(table, id) {
+        const r = await fetch(
+          SUPABASE_URL + "/rest/v1/" + table + "?id=eq." + id,
+          {
+            method: "DELETE",
+            headers: {
+              apikey: SUPABASE_KEY,
+              Authorization: "Bearer " + SUPABASE_KEY,
+              Prefer: "return=minimal",
+            },
+          },
+        );
+        if (!r.ok) throw new Error(r.status);
+        return true;
+      }
+
+      // ============================================================
+      // COUNTDOWN (mini di header)
+      // ============================================================
+      function startCountdown() {
+        const target = new Date(WEDDING_DATE).getTime();
+        function tick() {
+          const diff = target - Date.now();
+          if (diff <= 0) {
+            document.getElementById("cdMini").innerHTML =
+              '<span style="color:var(--gold);font-size:0.8rem">🎉 Hari H!</span>';
+            return;
+          }
+          const pad = (n) => String(Math.floor(n)).padStart(2, "0");
+          document.getElementById("cdD").textContent = pad(diff / 86400000);
+          document.getElementById("cdH").textContent = pad(
+            (diff % 86400000) / 3600000,
+          );
+          document.getElementById("cdM").textContent = pad(
+            (diff % 3600000) / 60000,
+          );
+          document.getElementById("cdS").textContent = pad(
+            (diff % 60000) / 1000,
+          );
+        }
+        tick();
+        setInterval(tick, 1000);
       }
 
       // ============================================================
@@ -785,15 +1111,15 @@
       let filteredGuests = [];
       let filteredMessages = [];
       let guestPage = 1;
+      let msgFilter = "all";
       const PER_PAGE = 20;
-      let currentMsgFilter = "all";
 
       async function loadAll() {
         document.getElementById("lastUpdate").textContent = "Memperbarui...";
         try {
           const [guests, messages] = await Promise.all([
-            sbFetch("guests?select=*&order=opened_at.desc.nullslast"),
-            sbFetch("messages?select=*&order=created_at.desc"),
+            sbGet("guests?select=*&order=opened_at.desc.nullslast"),
+            sbGet("messages?select=*&order=created_at.desc"),
           ]);
           allGuests = guests || [];
           allMessages = messages || [];
@@ -804,9 +1130,9 @@
           renderMessages();
           document.getElementById("lastUpdate").textContent =
             "Update: " + new Date().toLocaleTimeString("id-ID");
-        } catch (err) {
-          showToast("Gagal load data: " + err.message);
-          document.getElementById("lastUpdate").textContent = "Gagal load";
+        } catch (e) {
+          showToast("Gagal load data: " + e.message);
+          document.getElementById("lastUpdate").textContent = "Gagal";
         }
       }
 
@@ -814,8 +1140,8 @@
       // STATS
       // ============================================================
       function updateStats() {
-        const opened = allGuests.filter((g) => g.opened).length;
         const total = allGuests.length;
+        const opened = allGuests.filter((g) => g.opened).length;
         const hadir = allMessages.filter((m) => m.attend === "hadir").length;
         const tidak = allMessages.filter(
           (m) => m.attend === "tidak-hadir",
@@ -829,23 +1155,21 @@
         document.getElementById("statTotal").textContent = total;
         document.getElementById("statOpened").textContent = opened;
         document.getElementById("statOpenedPct").textContent =
-          pct + "% dari total";
+          pct + "% dari tamu terdaftar";
         document.getElementById("statHadir").textContent = hadir;
         document.getElementById("statMessages").textContent = msgTotal;
 
-        // Progress bars
-        const base = msgTotal > 0 ? msgTotal : 1;
-        setProgress("Hadir", hadir, hadir, base);
-        setProgress("Tidak", tidak, tidak, base);
-        setProgress("Mungkin", mungkin, mungkin, base);
+        const base = msgTotal || 1;
+        setBar("Hadir", hadir, base);
+        setBar("Tidak", tidak, base);
+        setBar("Mungkin", mungkin, base);
       }
-
-      function setProgress(key, count, val, base) {
+      function setBar(key, val, base) {
         const pct = Math.round((val / base) * 100);
-        const el = document.getElementById("pct" + key);
-        const bar = document.getElementById("bar" + key);
-        if (el) el.textContent = count + " orang (" + pct + "%)";
-        if (bar) bar.style.width = pct + "%";
+        const p = document.getElementById("pct" + key);
+        const b = document.getElementById("bar" + key);
+        if (p) p.textContent = val + " orang (" + pct + "%)";
+        if (b) b.style.width = pct + "%";
       }
 
       // ============================================================
@@ -855,81 +1179,72 @@
         const cont = document.getElementById("guestsContent");
         if (filteredGuests.length === 0) {
           cont.innerHTML =
-            '<div class="empty"><i class="fa-regular fa-envelope"></i>Belum ada tamu yang buka undangan.<br><small>Share link ke tamu dulu!</small></div>';
+            '<div class="empty"><i class="fa-regular fa-envelope"></i>Belum ada tamu yang buka undangan.</div>';
           document.getElementById("guestPagination").innerHTML = "";
           return;
         }
-
         const start = (guestPage - 1) * PER_PAGE;
         const page = filteredGuests.slice(start, start + PER_PAGE);
 
         cont.innerHTML = `
-    <div style="overflow-x:auto">
+    <div class="table-wrap">
     <table>
       <thead><tr>
-        <th>#</th>
-        <th>Nama Tamu</th>
-        <th>Status Buka</th>
-        <th>Waktu Buka</th>
-        <th>Aksi</th>
+        <th>#</th><th>Nama Tamu</th><th>Status</th>
+        <th>Waktu Buka</th><th>Aksi</th>
       </tr></thead>
       <tbody>
-        ${page
-          .map(
-            (g, i) => `
-          <tr>
-            <td style="color:var(--gray)">${start + i + 1}</td>
-            <td><strong>${esc(g.name)}</strong></td>
-            <td>${
-              g.opened
-                ? '<span class="badge badge-opened">📬 Sudah Buka</span>'
-                : '<span class="badge badge-belum">⏳ Belum</span>'
-            }</td>
-            <td class="time-ago">${g.opened_at ? formatTime(g.opened_at) : "—"}</td>
-            <td>
-              <button class="btn btn-sm" onclick="copyLink('${esc(g.name)}')">
-                <i class="fa-solid fa-link"></i> Copy Link
-              </button>
-            </td>
-          </tr>
-        `,
-          )
-          .join("")}
+      ${page
+        .map(
+          (g, i) => `
+        <tr>
+          <td class="num-col">${start + i + 1}</td>
+          <td><strong>${esc(g.name)}</strong></td>
+          <td>${
+            g.opened
+              ? '<span class="badge badge-opened">📬 Sudah Buka</span>'
+              : '<span class="badge badge-belum">⏳ Belum Buka</span>'
+          }</td>
+          <td class="time-small">${g.opened_at ? fmtTime(g.opened_at) : "—"}</td>
+          <td>
+            <button class="btn btn-sm" onclick="copyLink('${esc(g.name)}')">
+              <i class="fa-solid fa-link"></i> Copy Link
+            </button>
+          </td>
+        </tr>
+      `,
+        )
+        .join("")}
       </tbody>
     </table>
-    </div>
-  `;
-        renderGuestPagination();
+    </div>`;
+        renderGuestPag();
       }
 
-      function renderGuestPagination() {
+      function renderGuestPag() {
         const total = Math.ceil(filteredGuests.length / PER_PAGE);
         const pag = document.getElementById("guestPagination");
         if (total <= 1) {
           pag.innerHTML = "";
           return;
         }
-
-        let html = `<button class="page-btn" onclick="guestGoPage(${guestPage - 1})" ${guestPage === 1 ? 'disabled style="opacity:.3"' : ""}>←</button>`;
+        let h = `<button class="page-btn" onclick="gPage(${guestPage - 1})" ${guestPage === 1 ? 'disabled style="opacity:.3"' : ""}>←</button>`;
         for (let i = 1; i <= total; i++) {
-          if (i === 1 || i === total || Math.abs(i - guestPage) <= 1) {
-            html += `<button class="page-btn ${i === guestPage ? "active" : ""}" onclick="guestGoPage(${i})">${i}</button>`;
-          } else if (Math.abs(i - guestPage) === 2) {
-            html += `<span style="color:var(--gray);padding:0 4px">…</span>`;
-          }
+          if (i === 1 || i === total || Math.abs(i - guestPage) <= 1)
+            h += `<button class="page-btn ${i === guestPage ? "active" : ""}" onclick="gPage(${i})">${i}</button>`;
+          else if (Math.abs(i - guestPage) === 2)
+            h += `<span style="color:var(--gray);padding:0 4px">…</span>`;
         }
-        html += `<button class="page-btn" onclick="guestGoPage(${guestPage + 1})" ${guestPage === total ? 'disabled style="opacity:.3"' : ""}>→</button>`;
-        html += `<span class="page-info">${filteredGuests.length} tamu</span>`;
-        pag.innerHTML = html;
+        h += `<button class="page-btn" onclick="gPage(${guestPage + 1})" ${guestPage === total ? 'disabled style="opacity:.3"' : ""}>→</button>`;
+        h += `<span class="page-info">${filteredGuests.length} tamu</span>`;
+        pag.innerHTML = h;
       }
-
-      function guestGoPage(p) {
-        const total = Math.ceil(filteredGuests.length / PER_PAGE);
-        if (p < 1 || p > total) return;
+      function gPage(p) {
+        const t = Math.ceil(filteredGuests.length / PER_PAGE);
+        if (p < 1 || p > t) return;
         guestPage = p;
         renderGuests();
       }
-
       function filterGuests(q) {
         filteredGuests = allGuests.filter((g) =>
           g.name.toLowerCase().includes(q.toLowerCase()),
@@ -939,41 +1254,47 @@
       }
 
       // ============================================================
-      // MESSAGES LIST
+      // MESSAGES — dengan tombol HAPUS
       // ============================================================
       function renderMessages() {
         const cont = document.getElementById("messagesContent");
         const data =
-          currentMsgFilter === "all"
+          msgFilter === "all"
             ? filteredMessages
-            : filteredMessages.filter((m) => m.attend === currentMsgFilter);
+            : filteredMessages.filter((m) => m.attend === msgFilter);
 
         if (data.length === 0) {
           cont.innerHTML =
-            '<div class="empty"><i class="fa-regular fa-comment"></i>Belum ada ucapan masuk.</div>';
+            '<div class="empty"><i class="fa-regular fa-comment"></i>Belum ada ucapan.</div>';
           return;
         }
-
         cont.innerHTML = data
           .map(
             (m) => `
-    <div class="msg-card">
-      <div class="msg-header">
-        <span class="msg-name">${esc(m.name)}</span>
-        <div style="display:flex;gap:8px;align-items:center">
-          ${attendBadge(m.attend)}
-          <span class="time-ago">${formatTime(m.created_at)}</span>
+    <div class="msg-card" id="msg-${m.id}">
+      <div class="msg-body">
+        <div class="msg-header">
+          <span class="msg-name">${esc(m.name)}</span>
+          <div class="msg-meta">
+            ${attendBadge(m.attend)}
+            <span class="time-small">${fmtTime(m.created_at)}</span>
+          </div>
         </div>
+        <p class="msg-text">"${esc(m.message)}"</p>
       </div>
-      <p class="msg-text">"${esc(m.message)}"</p>
+      <div class="msg-actions">
+        <button class="btn btn-sm btn-danger" onclick="openDeleteModal(${m.id},'${esc(m.name)}','${esc(m.message.substring(0, 60))}')">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
     </div>
   `,
           )
           .join("");
       }
 
-      function filterMessages(val, btn) {
-        currentMsgFilter = val;
+      function filterMsg(val, btn) {
+        msgFilter = val;
         document
           .querySelectorAll(".filter-btn")
           .forEach((b) => b.classList.remove("active"));
@@ -982,18 +1303,111 @@
       }
 
       function attendBadge(v) {
-        const map = {
+        const m = {
           hadir: "badge-hadir ✅ Hadir",
           "tidak-hadir": "badge-tidak ❌ Tidak",
           mungkin: "badge-mungkin 🤔 Belum Pasti",
         };
-        const val = map[v] || "badge-belum " + v;
-        const [cls, ...label] = val.split(" ");
+        const s = m[v] || "badge-belum " + v;
+        const [cls, ...label] = s.split(" ");
         return `<span class="badge ${cls}">${label.join(" ")}</span>`;
       }
 
       // ============================================================
-      // TABS
+      // DELETE MODAL
+      // ============================================================
+      let pendingDeleteId = null;
+
+      function openDeleteModal(id, name, preview) {
+        pendingDeleteId = id;
+        document.getElementById("deletePreview").textContent =
+          '"' + preview + (preview.length >= 60 ? "…" : "") + '"  — ' + name;
+        document.getElementById("deleteModal").classList.add("show");
+      }
+      function closeDeleteModal() {
+        pendingDeleteId = null;
+        document.getElementById("deleteModal").classList.remove("show");
+      }
+      async function confirmDelete() {
+        if (!pendingDeleteId) return;
+        const id = pendingDeleteId;
+        closeDeleteModal();
+        try {
+          await sbDelete("messages", id);
+          // Hapus dari array lokal
+          allMessages = allMessages.filter((m) => m.id !== id);
+          filteredMessages = filteredMessages.filter((m) => m.id !== id);
+          // Hapus elemen dari DOM
+          const el = document.getElementById("msg-" + id);
+          if (el) el.style.animation = "fadeOut 0.3s ease forwards";
+          setTimeout(function () {
+            if (el) el.remove();
+            updateStats();
+          }, 300);
+          showToast("🗑️ Ucapan berhasil dihapus.");
+        } catch (e) {
+          showToast("❌ Gagal hapus: " + e.message);
+        }
+      }
+
+      // ============================================================
+      // COPY LINK
+      // ============================================================
+      function copyLink(name) {
+        const base =
+          window.location.origin +
+          window.location.pathname.replace("dashboard.html", "");
+        const url = base + "index.html?to=" + encodeURIComponent(name);
+        navigator.clipboard
+          .writeText(url)
+          .then(() => showToast("✅ Link " + name + " disalin!"));
+      }
+
+      // ============================================================
+      // EXPORT
+      // ============================================================
+      function exportGuestsCSV() {
+        const h = "No,Nama,Status,Waktu Buka\n";
+        const r = allGuests
+          .map(
+            (g, i) =>
+              `${i + 1},"${g.name}","${g.opened ? "Sudah Buka" : "Belum"}","${g.opened_at || "-"}"`,
+          )
+          .join("\n");
+        dl("tamu-tracking.csv", h + r, "text/csv");
+        showToast("✅ CSV tamu didownload!");
+      }
+      function exportMessagesCSV() {
+        const h = "No,Nama,Kehadiran,Ucapan,Waktu\n";
+        const r = allMessages
+          .map(
+            (m, i) =>
+              `${i + 1},"${m.name}","${m.attend}","${m.message.replace(/"/g, "'")}","${m.created_at}"`,
+          )
+          .join("\n");
+        dl("ucapan-tamu.csv", h + r, "text/csv");
+        showToast("✅ CSV ucapan didownload!");
+      }
+      function exportHadirCSV() {
+        const hadir = allMessages.filter((m) => m.attend === "hadir");
+        const h = "No,Nama,Ucapan\n";
+        const r = hadir
+          .map(
+            (m, i) => `${i + 1},"${m.name}","${m.message.replace(/"/g, "'")}"`,
+          )
+          .join("\n");
+        dl("konfirmasi-hadir.csv", h + r, "text/csv");
+        showToast("✅ CSV hadir didownload!");
+      }
+      function dl(name, content, type) {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(new Blob([content], { type }));
+        a.download = name;
+        a.click();
+      }
+
+      // ============================================================
+      // UTILS
       // ============================================================
       function switchTab(name, btn) {
         document
@@ -1005,68 +1419,7 @@
         document.getElementById("tab-" + name).classList.add("active");
         btn.classList.add("active");
       }
-
-      // ============================================================
-      // COPY LINK
-      // ============================================================
-      function copyLink(name) {
-        const baseUrl =
-          window.location.origin +
-          window.location.pathname.replace("dashboard.html", "");
-        const url = baseUrl + "index.html?to=" + encodeURIComponent(name);
-        navigator.clipboard
-          .writeText(url)
-          .then(() => showToast("✅ Link " + name + " disalin!"));
-      }
-
-      // ============================================================
-      // EXPORT
-      // ============================================================
-      function exportGuestsCSV() {
-        const header = "No,Nama,Status Buka,Waktu Buka\n";
-        const rows = allGuests
-          .map(
-            (g, i) =>
-              `${i + 1},"${g.name}","${g.opened ? "Sudah Buka" : "Belum"}","${g.opened_at || "-"}"`,
-          )
-          .join("\n");
-        download("tamu-buka-undangan.csv", header + rows, "text/csv");
-        showToast("✅ CSV tamu didownload!");
-      }
-      function exportMessagesCSV() {
-        const header = "No,Nama,Kehadiran,Ucapan,Waktu\n";
-        const rows = allMessages
-          .map(
-            (m, i) =>
-              `${i + 1},"${m.name}","${m.attend}","${m.message.replace(/"/g, "'")}","${m.created_at}"`,
-          )
-          .join("\n");
-        download("ucapan-tamu.csv", header + rows, "text/csv");
-        showToast("✅ CSV ucapan didownload!");
-      }
-      function exportHadirCSV() {
-        const hadir = allMessages.filter((m) => m.attend === "hadir");
-        const header = "No,Nama,Ucapan\n";
-        const rows = hadir
-          .map(
-            (m, i) => `${i + 1},"${m.name}","${m.message.replace(/"/g, "'")}"`,
-          )
-          .join("\n");
-        download("konfirmasi-hadir.csv", header + rows, "text/csv");
-        showToast("✅ CSV hadir didownload!");
-      }
-      function download(name, content, type) {
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(new Blob([content], { type }));
-        a.download = name;
-        a.click();
-      }
-
-      // ============================================================
-      // UTILS
-      // ============================================================
-      function formatTime(iso) {
-        if (!iso) return "—";
+      function fmtTime(iso) {
         return new Date(iso).toLocaleString("id-ID", {
           day: "numeric",
           month: "short",
@@ -1080,19 +1433,20 @@
         d.appendChild(document.createTextNode(t || ""));
         return d.innerHTML;
       }
-
       let toastT;
       function showToast(msg) {
         const t = document.getElementById("toast");
         t.textContent = msg;
         t.classList.add("show");
         clearTimeout(toastT);
-        toastT = setTimeout(() => t.classList.remove("show"), 3000);
+        toastT = setTimeout(() => t.classList.remove("show"), 3500);
       }
 
-      // Auto refresh setiap 30 detik
-      loadAll();
-      setInterval(loadAll, 30000);
+      // Tambah animasi fade out untuk delete
+      const style = document.createElement("style");
+      style.textContent =
+        "@keyframes fadeOut{to{opacity:0;transform:translateX(20px);height:0;padding:0;margin:0;overflow:hidden;}}";
+      document.head.appendChild(style);
     </script>
   </body>
 </html>

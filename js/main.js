@@ -4,7 +4,7 @@
 // ============================================================
 
 const CONFIG = {
-  weddingDate: "2025-07-12T08:00:00",
+  weddingDate: "2026-05-09T08:00:00",
   defaultGuest: "Tamu Undangan",
 };
 
