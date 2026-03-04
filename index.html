@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eriel & Garyn — Wedding Invitation</title>
+    <meta name="description" content="Undangan Pernikahan Eriel & Garyn" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- ===================== OPENING SCREEN ===================== -->
+    <div id="opening" class="opening">
+      <div class="opening-ornament top-left"></div>
+      <div class="opening-ornament top-right"></div>
+      <div class="opening-ornament bottom-left"></div>
+      <div class="opening-ornament bottom-right"></div>
+
+      <div class="opening-content">
+        <p class="opening-label">Undangan Pernikahan</p>
+        <div class="opening-divider">
+          <span></span><i class="fa-solid fa-diamond"></i><span></span>
+        </div>
+        <h1 class="opening-names">Eriel <span>&</span> Garyn</h1>
+        <div class="opening-divider">
+          <span></span><i class="fa-solid fa-diamond"></i><span></span>
+        </div>
+        <p class="opening-to">Kepada Yth.</p>
+        <p class="opening-guest" id="guestName">Tamu Undangan</p>
+        <button class="opening-btn" id="openBtn">
+          <span>Buka Undangan</span>
+          <i class="fa-solid fa-envelope-open-text"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===================== MAIN CONTENT ===================== -->
+    <main id="mainContent" class="hidden">
+      <!-- MUSIC PLAYER (sticky) -->
+      <div class="music-player" id="musicPlayer">
+        <button id="musicToggle" class="music-btn" title="Play/Pause Musik">
+          <i class="fa-solid fa-music" id="musicIcon"></i>
+        </button>
+        <div class="music-info">
+          <span id="musicTitle">Perfect — Ed Sheeran</span>
+          <div class="music-bar" id="musicBar">
+            <span class="bar"></span><span class="bar"></span
+            ><span class="bar"></span> <span class="bar"></span
+            ><span class="bar"></span>
+          </div>
+        </div>
+        <audio id="bgMusic" loop>
+          <!-- Ganti src dengan file musik kamu di assets/music/ -->
+          <source src="assets/music/song.mp3" type="audio/mpeg" />
+        </audio>
+      </div>
+
+      <!-- HERO SECTION -->
+      <section class="hero" id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <p class="hero-subtitle fade-up">The Wedding of</p>
+          <h1 class="hero-title fade-up">
+            <span class="name-left">Eriel</span>
+            <span class="ampersand">&</span>
+            <span class="name-right">Garyn</span>
+          </h1>
+          <p class="hero-date fade-up">Sabtu, 12 Juli 2025</p>
+          <div class="hero-divider fade-up">
+            <span></span><i class="fa-solid fa-infinity"></i><span></span>
+          </div>
+
+          <!-- COUNTDOWN -->
+          <div class="countdown fade-up" id="countdown">
+            <div class="countdown-item">
+              <span class="countdown-num" id="days">00</span>
+              <span class="countdown-label">Hari</span>
+            </div>
+            <div class="countdown-dot">:</div>
+            <div class="countdown-item">
+              <span class="countdown-num" id="hours">00</span>
+              <span class="countdown-label">Jam</span>
+            </div>
+            <div class="countdown-dot">:</div>
+            <div class="countdown-item">
+              <span class="countdown-num" id="minutes">00</span>
+              <span class="countdown-label">Menit</span>
+            </div>
+            <div class="countdown-dot">:</div>
+            <div class="countdown-item">
+              <span class="countdown-num" id="seconds">00</span>
+              <span class="countdown-label">Detik</span>
+            </div>
+          </div>
+
+          <p class="hero-quote fade-up">
+            "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan
+            untukmu istri-istri dari jenismu sendiri, supaya kamu cenderung dan
+            merasa tenteram kepadanya."<br /><em>— QS. Ar-Rum: 21</em>
+          </p>
+        </div>
+
+        <div class="scroll-hint">
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+      </section>
+
+      <!-- COUPLE SECTION -->
+      <section class="couple" id="couple">
+        <div class="section-header">
+          <div class="section-line"></div>
+          <p class="section-tag">Mempelai</p>
+          <div class="section-line"></div>
+        </div>
+        <h2 class="section-title">Dua Insan, Satu Janji</h2>
+
+        <div class="couple-cards">
+          <div class="couple-card reveal">
+            <div class="couple-photo-frame">
+              <div
+                class="couple-photo"
+                style="
+                  background-image: url(&quot;assets/photos/groom.jpg&quot;);
+                "
+              >
+                <div class="photo-placeholder">
+                  <i class="fa-solid fa-user"></i>
+                </div>
+              </div>
+            </div>
+            <h3 class="couple-name">Eriel Setiawan Dewantoro</h3>
+            <p class="couple-role">Mempelai Pria</p>
+            <p class="couple-parents">Putra dari Bapak & Ibu</p>
+            <div class="couple-socials">
+              <a href="#" class="social-link"
+                ><i class="fa-brands fa-instagram"></i
+              ></a>
+            </div>
+          </div>
+
+          <div class="couple-heart">
+            <i class="fa-solid fa-heart"></i>
+          </div>
+
+          <div class="couple-card reveal">
+            <div class="couple-photo-frame">
+              <div
+                class="couple-photo"
+                style="
+                  background-image: url(&quot;assets/photos/bride.jpg&quot;);
+                "
+              >
+                <div class="photo-placeholder">
+                  <i class="fa-solid fa-user"></i>
+                </div>
+              </div>
+            </div>
+            <h3 class="couple-name">Garyn Fritzi Iswara</h3>
+            <p class="couple-role">Mempelai Wanita</p>
+            <p class="couple-parents">Putri dari Bapak & Ibu</p>
+            <div class="couple-socials">
+              <a href="#" class="social-link"
+                ><i class="fa-brands fa-instagram"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STORY TIMELINE -->
+      <section class="story" id="story">
+        <div class="story-bg"></div>
+        <div class="section-header">
+          <div class="section-line light"></div>
+          <p class="section-tag light">Kisah Kami</p>
+          <div class="section-line light"></div>
+        </div>
+        <h2 class="section-title light">Our Love Story</h2>
+
+        <div class="timeline">
+          <div class="timeline-item left reveal">
+            <div class="timeline-dot"><i class="fa-solid fa-star"></i></div>
+            <div class="timeline-card">
+              <span class="timeline-year">2019</span>
+              <h3>Pertemuan Pertama</h3>
+              <p>
+                Takdir mempertemukan kami di sebuah kafe kecil di sudut kota.
+                Satu tatapan yang mengubah segalanya.
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-item right reveal">
+            <div class="timeline-dot"><i class="fa-solid fa-heart"></i></div>
+            <div class="timeline-card">
+              <span class="timeline-year">2020</span>
+              <h3>Jatuh Cinta</h3>
+              <p>
+                Pelan tapi pasti, kami mulai menyadari bahwa setiap hari terasa
+                lebih indah ketika dilewati bersama.
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-item left reveal">
+            <div class="timeline-dot"><i class="fa-solid fa-ring"></i></div>
+            <div class="timeline-card">
+              <span class="timeline-year">2023</span>
+              <h3>Lamaran</h3>
+              <p>
+                Di bawah langit senja yang keemasan, Eriel berlutut dan meminta
+                Garyn untuk menemaninya seumur hidup.
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-item right reveal">
+            <div class="timeline-dot"><i class="fa-solid fa-church"></i></div>
+            <div class="timeline-card">
+              <span class="timeline-year">2025</span>
+              <h3>Pernikahan</h3>
+              <p>
+                Hari ini, di hadapan Allah dan orang-orang tercinta, kami resmi
+                menjadi satu. Selamanya.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EVENT DETAILS -->
+      <section class="events" id="events">
+        <div class="section-header">
+          <div class="section-line"></div>
+          <p class="section-tag">Acara</p>
+          <div class="section-line"></div>
+        </div>
+        <h2 class="section-title">Detail Acara</h2>
+
+        <div class="event-cards">
+          <div class="event-card reveal">
+            <div class="event-icon"><i class="fa-solid fa-mosque"></i></div>
+            <span class="event-badge">Akad Nikah</span>
+            <h3>Sabtu, 12 Juli 2025</h3>
+            <p class="event-time">
+              <i class="fa-regular fa-clock"></i> 08.00 — 10.00 WIB
+            </p>
+            <p class="event-venue">Masjid Al-Hikmah</p>
+            <p class="event-address">Jl. Mawar No. 12, Jakarta Selatan</p>
+            <a
+              href="https://maps.google.com/?q=-6.2146,106.8451"
+              target="_blank"
+              class="map-btn"
+            >
+              <i class="fa-solid fa-map-location-dot"></i> Buka Maps
+            </a>
+          </div>
+
+          <div class="event-card reveal">
+            <div class="event-icon">
+              <i class="fa-solid fa-champagne-glasses"></i>
+            </div>
+            <span class="event-badge">Resepsi</span>
+            <h3>Sabtu, 12 Juli 2025</h3>
+            <p class="event-time">
+              <i class="fa-regular fa-clock"></i> 11.00 — 16.00 WIB
+            </p>
+            <p class="event-venue">Grand Ballroom The Sultan</p>
+            <p class="event-address">Jl. Jend. Sudirman, Jakarta Pusat</p>
+            <a
+              href="https://maps.google.com/?q=-6.2088,106.8228"
+              target="_blank"
+              class="map-btn"
+            >
+              <i class="fa-solid fa-map-location-dot"></i> Buka Maps
+            </a>
+          </div>
+        </div>
+
+        <!-- EMBEDDED MAP -->
+        <div class="map-embed reveal">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126920.33060872!2d106.75511720000001!3d-6.229728999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3e945e34b9d%3A0x5371bf0fdad786a2!2sJakarta!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid"
+            width="100%"
+            height="350"
+            style="border: 0"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Lokasi Acara"
+          >
+          </iframe>
+        </div>
+      </section>
+
+      <!-- GALLERY -->
+      <section class="gallery" id="gallery">
+        <div class="story-bg"></div>
+        <div class="section-header">
+          <div class="section-line light"></div>
+          <p class="section-tag light">Galeri</p>
+          <div class="section-line light"></div>
+        </div>
+        <h2 class="section-title light">Momen Berharga</h2>
+
+        <div class="gallery-grid" id="galleryGrid">
+          <div class="gallery-item reveal" data-src="assets/photos/photo1.jpg">
+            <div class="gallery-placeholder">
+              <i class="fa-regular fa-image"></i><span>Foto 1</span>
+            </div>
+            <img
+              src="assets/photos/photo1.jpg"
+              alt="Foto 1"
+              loading="lazy"
+              onerror="this.style.display = 'none'"
+            />
+            <div class="gallery-overlay">
+              <i class="fa-solid fa-magnifying-glass-plus"></i>
+            </div>
+          </div>
+          <div
+            class="gallery-item reveal large"
+            data-src="assets/photos/photo2.jpg"
+          >
+            <div class="gallery-placeholder">
+              <i class="fa-regular fa-image"></i><span>Foto 2</span>
+            </div>
+            <img
+              src="assets/photos/photo2.jpg"
+              alt="Foto 2"
+              loading="lazy"
+              onerror="this.style.display = 'none'"
+            />
+            <div class="gallery-overlay">
+              <i class="fa-solid fa-magnifying-glass-plus"></i>
+            </div>
+          </div>
+          <div class="gallery-item reveal" data-src="assets/photos/photo3.jpg">
+            <div class="gallery-placeholder">
+              <i class="fa-regular fa-image"></i><span>Foto 3</span>
+            </div>
+            <img
+              src="assets/photos/photo3.jpg"
+              alt="Foto 3"
+              loading="lazy"
+              onerror="this.style.display = 'none'"
+            />
+            <div class="gallery-overlay">
+              <i class="fa-solid fa-magnifying-glass-plus"></i>
+            </div>
+          </div>
+          <div class="gallery-item reveal" data-src="assets/photos/photo4.jpg">
+            <div class="gallery-placeholder">
+              <i class="fa-regular fa-image"></i><span>Foto 4</span>
+            </div>
+            <img
+              src="assets/photos/photo4.jpg"
+              alt="Foto 4"
+              loading="lazy"
+              onerror="this.style.display = 'none'"
+            />
+            <div class="gallery-overlay">
+              <i class="fa-solid fa-magnifying-glass-plus"></i>
+            </div>
+          </div>
+          <div
+            class="gallery-item reveal tall"
+            data-src="assets/photos/photo5.jpg"
+          >
+            <div class="gallery-placeholder">
+              <i class="fa-regular fa-image"></i><span>Foto 5</span>
+            </div>
+            <img
+              src="assets/photos/photo5.jpg"
+              alt="Foto 5"
+              loading="lazy"
+              onerror="this.style.display = 'none'"
+            />
+            <div class="gallery-overlay">
+              <i class="fa-solid fa-magnifying-glass-plus"></i>
+            </div>
+          </div>
+          <div class="gallery-item reveal" data-src="assets/photos/photo6.jpg">
+            <div class="gallery-placeholder">
+              <i class="fa-regular fa-image"></i><span>Foto 6</span>
+            </div>
+            <img
+              src="assets/photos/photo6.jpg"
+              alt="Foto 6"
+              loading="lazy"
+              onerror="this.style.display = 'none'"
+            />
+            <div class="gallery-overlay">
+              <i class="fa-solid fa-magnifying-glass-plus"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- LIGHTBOX -->
+        <div class="lightbox" id="lightbox">
+          <button class="lightbox-close" id="lightboxClose">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <img src="" alt="Foto besar" id="lightboxImg" />
+        </div>
+      </section>
+
+      <!-- GIFT / AMPLOP DIGITAL -->
+      <section class="gift" id="gift">
+        <div class="section-header">
+          <div class="section-line"></div>
+          <p class="section-tag">Hadiah</p>
+          <div class="section-line"></div>
+        </div>
+        <h2 class="section-title">Wedding Gift</h2>
+        <p class="gift-desc">
+          Doa dan kehadiran Anda adalah hadiah terbaik bagi kami. Namun jika
+          ingin memberikan tanda kasih, kami dengan rendah hati menerimanya
+          melalui:
+        </p>
+
+        <div class="gift-cards">
+          <div class="gift-card reveal">
+            <div class="gift-icon">
+              <i class="fa-solid fa-building-columns"></i>
+            </div>
+            <h3>Transfer Bank</h3>
+            <p class="bank-name">BCA</p>
+            <p class="bank-number">1234 5678 9012</p>
+            <p class="bank-holder">a/n Muhammad Eriel</p>
+            <button class="copy-btn" onclick="copyText('123456789012')">
+              <i class="fa-regular fa-copy"></i> Salin Nomor
+            </button>
+          </div>
+
+          <div class="gift-card reveal">
+            <div class="gift-icon"><i class="fa-solid fa-wallet"></i></div>
+            <h3>GoPay / OVO</h3>
+            <p class="bank-name">GoPay</p>
+            <p class="bank-number">0812-3456-7890</p>
+            <p class="bank-holder">a/n Garyn Fritzi Iswara</p>
+            <button class="copy-btn" onclick="copyText('081234567890')">
+              <i class="fa-regular fa-copy"></i> Salin Nomor
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- GUESTBOOK / UCAPAN -->
+      <section class="guestbook" id="guestbook">
+        <div class="story-bg"></div>
+        <div class="section-header">
+          <div class="section-line light"></div>
+          <p class="section-tag light">Ucapan</p>
+          <div class="section-line light"></div>
+        </div>
+        <h2 class="section-title light">Buku Tamu & Ucapan</h2>
+        <p class="section-subtitle light">
+          Sampaikan doa dan ucapan terbaik Anda untuk kami
+        </p>
+
+        <div class="guestbook-form reveal">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="gbName">Nama Anda</label>
+              <input
+                type="text"
+                id="gbName"
+                placeholder="Masukkan nama..."
+                maxlength="50"
+              />
+            </div>
+            <div class="form-group">
+              <label for="gbAttend">Konfirmasi Kehadiran</label>
+              <select id="gbAttend">
+                <option value="hadir">✅ Hadir</option>
+                <option value="tidak-hadir">❌ Tidak Dapat Hadir</option>
+                <option value="mungkin">🤔 Masih Belum Pasti</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="gbMessage">Pesan & Doa</label>
+            <textarea
+              id="gbMessage"
+              placeholder="Tuliskan ucapan dan doa terbaik Anda..."
+              maxlength="300"
+              rows="4"
+            ></textarea>
+            <span class="char-count"><span id="charCount">0</span>/300</span>
+          </div>
+          <button class="submit-btn" id="submitBtn">
+            <i class="fa-solid fa-paper-plane"></i> Kirim Ucapan
+          </button>
+        </div>
+
+        <!-- Messages List -->
+        <div class="messages-container" id="messagesContainer">
+          <div class="messages-list" id="messagesList"></div>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="footer">
+        <div class="footer-content">
+          <p class="footer-label">Dengan penuh cinta,</p>
+          <h2 class="footer-names">Eriel <span>&</span> Garyn</h2>
+          <p class="footer-date">12 · 07 · 2025</p>
+          <div class="footer-divider">
+            <span></span><i class="fa-solid fa-diamond"></i><span></span>
+          </div>
+          <p class="footer-quote">"Home is wherever I'm with you."</p>
+          <p class="footer-credit">
+            Made with <i class="fa-solid fa-heart"></i> — © 2025
+          </p>
+        </div>
+      </footer>
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="js/main.js"></script>
+  </body>
+</html>
