@@ -1,0 +1,1098 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Monitor — Eriel & Garyn</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --gold: #c9a84c;
+        --gold2: #e8c97a;
+        --dark: #0a0a0a;
+        --dark2: #111;
+        --dark3: #1a1a1a;
+        --border: #222;
+        --gray: #666;
+        --text: #e0e0e0;
+        --green: #4ade80;
+        --red: #f87171;
+        --yellow: #fbbf24;
+        --blue: #60a5fa;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--dark);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      /* ---- HEADER ---- */
+      .header {
+        background: var(--dark2);
+        border-bottom: 1px solid var(--border);
+        padding: 16px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .header-left h1 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--gold);
+      }
+      .header-left p {
+        font-size: 0.72rem;
+        color: var(--gray);
+        margin-top: 2px;
+      }
+      .header-right {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .btn {
+        padding: 8px 18px;
+        border: 1px solid var(--gold);
+        background: transparent;
+        color: var(--gold);
+        font-family: "Inter", sans-serif;
+        font-size: 0.75rem;
+        font-weight: 500;
+        cursor: pointer;
+        letter-spacing: 0.05em;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+      }
+      .btn:hover {
+        background: var(--gold);
+        color: #000;
+      }
+      .btn-sm {
+        padding: 5px 12px;
+        font-size: 0.7rem;
+      }
+      .btn-solid {
+        background: var(--gold);
+        color: #000;
+      }
+      .btn-solid:hover {
+        background: var(--gold2);
+      }
+
+      .live-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--green);
+        animation: pulse 1.5s ease-in-out infinite;
+        display: inline-block;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      /* ---- MAIN LAYOUT ---- */
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      /* ---- STATS CARDS ---- */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .stat-card {
+        background: var(--dark3);
+        border: 1px solid var(--border);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .stat-card .stat-icon {
+        font-size: 1.4rem;
+        margin-bottom: 4px;
+      }
+      .stat-card .stat-num {
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1;
+      }
+      .stat-card .stat-label {
+        font-size: 0.7rem;
+        color: var(--gray);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .stat-card .stat-sub {
+        font-size: 0.72rem;
+        color: var(--gray);
+        margin-top: 4px;
+      }
+      .stat-gold .stat-num {
+        color: var(--gold);
+      }
+      .stat-green .stat-num {
+        color: var(--green);
+      }
+      .stat-red .stat-num {
+        color: var(--red);
+      }
+      .stat-blue .stat-num {
+        color: var(--blue);
+      }
+
+      /* ---- PROGRESS BAR ---- */
+      .progress-section {
+        background: var(--dark3);
+        border: 1px solid var(--border);
+        padding: 20px;
+        margin-bottom: 24px;
+      }
+      .progress-section h3 {
+        font-size: 0.8rem;
+        color: var(--gray);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+      }
+      .progress-item {
+        margin-bottom: 14px;
+      }
+      .progress-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+      }
+      .progress-label {
+        font-size: 0.82rem;
+      }
+      .progress-val {
+        font-size: 0.82rem;
+        color: var(--gray);
+      }
+      .progress-bar-bg {
+        background: #222;
+        height: 6px;
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .progress-bar-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.8s ease;
+      }
+
+      /* ---- TABS ---- */
+      .tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 20px;
+      }
+      .tab {
+        padding: 10px 20px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        color: var(--gray);
+        transition: 0.2s;
+        background: none;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        font-family: "Inter", sans-serif;
+      }
+      .tab.active {
+        color: var(--gold);
+        border-bottom-color: var(--gold);
+      }
+      .tab:hover:not(.active) {
+        color: var(--text);
+      }
+
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+
+      /* ---- TABLE ---- */
+      .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .table-header h2 {
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+      .search-box {
+        background: var(--dark3);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 7px 14px;
+        font-family: "Inter", sans-serif;
+        font-size: 0.82rem;
+        outline: none;
+        min-width: 220px;
+      }
+      .search-box:focus {
+        border-color: var(--gold);
+      }
+
+      .filter-btns {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .filter-btn {
+        padding: 4px 12px;
+        font-size: 0.7rem;
+        cursor: pointer;
+        background: var(--dark3);
+        border: 1px solid var(--border);
+        color: var(--gray);
+        font-family: "Inter", sans-serif;
+        transition: 0.2s;
+      }
+      .filter-btn.active {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .filter-btn:hover {
+        border-color: #555;
+        color: var(--text);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+      }
+      thead tr {
+        background: var(--dark3);
+      }
+      th {
+        padding: 10px 12px;
+        text-align: left;
+        font-size: 0.65rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--gray);
+        font-weight: 500;
+        border-bottom: 1px solid var(--border);
+      }
+      td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #161616;
+      }
+      tr:hover td {
+        background: #111;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 3px 10px;
+        font-size: 0.65rem;
+        border-radius: 2px;
+        font-weight: 500;
+      }
+      .badge-hadir {
+        background: rgba(74, 222, 128, 0.12);
+        color: var(--green);
+      }
+      .badge-tidak {
+        background: rgba(248, 113, 113, 0.12);
+        color: var(--red);
+      }
+      .badge-mungkin {
+        background: rgba(251, 191, 36, 0.12);
+        color: var(--yellow);
+      }
+      .badge-opened {
+        background: rgba(96, 165, 250, 0.12);
+        color: var(--blue);
+      }
+      .badge-belum {
+        background: rgba(100, 100, 100, 0.12);
+        color: var(--gray);
+      }
+
+      .time-ago {
+        font-size: 0.72rem;
+        color: var(--gray);
+      }
+
+      /* ---- MESSAGE CARD ---- */
+      .msg-card {
+        background: var(--dark3);
+        border: 1px solid var(--border);
+        padding: 16px;
+        margin-bottom: 10px;
+        transition: 0.2s;
+      }
+      .msg-card:hover {
+        border-color: #333;
+      }
+      .msg-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .msg-name {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--gold2);
+      }
+      .msg-text {
+        font-size: 0.88rem;
+        color: #aaa;
+        font-style: italic;
+        line-height: 1.6;
+        margin-bottom: 6px;
+      }
+      .msg-time {
+        font-size: 0.68rem;
+        color: var(--gray);
+      }
+
+      /* ---- EMPTY STATE ---- */
+      .empty {
+        text-align: center;
+        padding: 3rem;
+        color: var(--gray);
+        font-size: 0.88rem;
+      }
+      .empty i {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        display: block;
+      }
+
+      /* ---- LOADING ---- */
+      .loading {
+        text-align: center;
+        padding: 3rem;
+        color: var(--gray);
+      }
+      .loading i {
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ---- PAGINATION ---- */
+      .pagination {
+        display: flex;
+        gap: 4px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .page-btn {
+        background: var(--dark3);
+        border: 1px solid var(--border);
+        color: var(--gray);
+        padding: 5px 11px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+      }
+      .page-btn.active {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .page-btn:hover:not(.active) {
+        border-color: #444;
+        color: var(--text);
+      }
+      .page-info {
+        color: var(--gray);
+        font-size: 0.72rem;
+        margin-left: auto;
+      }
+
+      /* ---- TOAST ---- */
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--dark3);
+        border: 1px solid var(--gold);
+        color: var(--text);
+        padding: 10px 18px;
+        font-size: 0.8rem;
+        opacity: 0;
+        transition: 0.3s;
+        z-index: 999;
+        pointer-events: none;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+
+      /* ---- RESPONSIVE ---- */
+      @media (max-width: 768px) {
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .container {
+          padding: 16px;
+        }
+        .header {
+          padding: 12px 16px;
+        }
+      }
+      @media (max-width: 480px) {
+        .stats-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-left">
+        <h1>📊 Dashboard Monitor</h1>
+        <p>Eriel & Garyn Wedding — Real-time tracking</p>
+      </div>
+      <div class="header-right">
+        <span class="live-dot"></span>
+        <span style="font-size: 0.72rem; color: var(--gray)" id="lastUpdate"
+          >Memuat...</span
+        >
+        <button class="btn btn-sm" onclick="loadAll()">
+          <i class="fa-solid fa-rotate-right"></i> Refresh
+        </button>
+        <a href="index.html" class="btn btn-sm" target="_blank"
+          ><i class="fa-solid fa-eye"></i> Lihat Undangan</a
+        >
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="stat-card stat-gold">
+          <div class="stat-icon">👥</div>
+          <div class="stat-num" id="statTotal">—</div>
+          <div class="stat-label">Total Tamu Terdaftar</div>
+        </div>
+        <div class="stat-card stat-blue">
+          <div class="stat-icon">📬</div>
+          <div class="stat-num" id="statOpened">—</div>
+          <div class="stat-label">Sudah Buka Undangan</div>
+          <div class="stat-sub" id="statOpenedPct">— %</div>
+        </div>
+        <div class="stat-card stat-green">
+          <div class="stat-icon">✅</div>
+          <div class="stat-num" id="statHadir">—</div>
+          <div class="stat-label">Konfirmasi Hadir</div>
+        </div>
+        <div class="stat-card stat-red">
+          <div class="stat-icon">💬</div>
+          <div class="stat-num" id="statMessages">—</div>
+          <div class="stat-label">Total Ucapan Masuk</div>
+        </div>
+      </div>
+
+      <!-- PROGRESS -->
+      <div class="progress-section">
+        <h3>Ringkasan Kehadiran</h3>
+        <div class="progress-item">
+          <div class="progress-header">
+            <span class="progress-label">✅ Hadir</span>
+            <span class="progress-val" id="pctHadir">0 orang (0%)</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div
+              class="progress-bar-fill"
+              id="barHadir"
+              style="width: 0%; background: var(--green)"
+            ></div>
+          </div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-header">
+            <span class="progress-label">❌ Tidak Hadir</span>
+            <span class="progress-val" id="pctTidak">0 orang (0%)</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div
+              class="progress-bar-fill"
+              id="barTidak"
+              style="width: 0%; background: var(--red)"
+            ></div>
+          </div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-header">
+            <span class="progress-label">🤔 Belum Pasti</span>
+            <span class="progress-val" id="pctMungkin">0 orang (0%)</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div
+              class="progress-bar-fill"
+              id="barMungkin"
+              style="width: 0%; background: var(--yellow)"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('guests', this)">
+          <i class="fa-solid fa-users"></i> Tamu Buka
+        </button>
+        <button class="tab" onclick="switchTab('messages', this)">
+          <i class="fa-solid fa-comments"></i> Ucapan & RSVP
+        </button>
+        <button class="tab" onclick="switchTab('export', this)">
+          <i class="fa-solid fa-download"></i> Export
+        </button>
+      </div>
+
+      <!-- TAB: GUESTS -->
+      <div class="tab-content active" id="tab-guests">
+        <div class="table-header">
+          <h2>Tamu yang Sudah Buka Undangan</h2>
+          <div
+            style="
+              display: flex;
+              gap: 8px;
+              flex-wrap: wrap;
+              align-items: center;
+            "
+          >
+            <input
+              class="search-box"
+              type="text"
+              placeholder="🔍 Cari nama..."
+              oninput="filterGuests(this.value)"
+            />
+          </div>
+        </div>
+
+        <div id="guestsContent">
+          <div class="loading">
+            <i class="fa-solid fa-spinner"></i><br /><br />Memuat data tamu...
+          </div>
+        </div>
+        <div class="pagination" id="guestPagination"></div>
+      </div>
+
+      <!-- TAB: MESSAGES -->
+      <div class="tab-content" id="tab-messages">
+        <div class="table-header">
+          <h2>Ucapan & Konfirmasi Kehadiran</h2>
+          <div class="filter-btns">
+            <button
+              class="filter-btn active"
+              onclick="filterMessages('all', this)"
+            >
+              Semua
+            </button>
+            <button class="filter-btn" onclick="filterMessages('hadir', this)">
+              ✅ Hadir
+            </button>
+            <button
+              class="filter-btn"
+              onclick="filterMessages('tidak-hadir', this)"
+            >
+              ❌ Tidak
+            </button>
+            <button
+              class="filter-btn"
+              onclick="filterMessages('mungkin', this)"
+            >
+              🤔 Belum Pasti
+            </button>
+          </div>
+        </div>
+        <div id="messagesContent">
+          <div class="loading">
+            <i class="fa-solid fa-spinner"></i><br /><br />Memuat ucapan...
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: EXPORT -->
+      <div class="tab-content" id="tab-export">
+        <h2 style="font-size: 0.9rem; margin-bottom: 20px">Export Data</h2>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+          "
+        >
+          <div
+            style="
+              background: var(--dark3);
+              border: 1px solid var(--border);
+              padding: 20px;
+            "
+          >
+            <h3
+              style="font-size: 0.9rem; color: var(--gold); margin-bottom: 8px"
+            >
+              <i class="fa-solid fa-users"></i> Data Tamu
+            </h3>
+            <p
+              style="
+                font-size: 0.8rem;
+                color: var(--gray);
+                margin-bottom: 16px;
+                line-height: 1.6;
+              "
+            >
+              Export semua tamu yang sudah buka undangan beserta waktu aksesnya.
+            </p>
+            <button class="btn btn-solid" onclick="exportGuestsCSV()">
+              <i class="fa-solid fa-file-csv"></i> Download CSV Tamu
+            </button>
+          </div>
+
+          <div
+            style="
+              background: var(--dark3);
+              border: 1px solid var(--border);
+              padding: 20px;
+            "
+          >
+            <h3
+              style="font-size: 0.9rem; color: var(--gold); margin-bottom: 8px"
+            >
+              <i class="fa-solid fa-comments"></i> Ucapan & RSVP
+            </h3>
+            <p
+              style="
+                font-size: 0.8rem;
+                color: var(--gray);
+                margin-bottom: 16px;
+                line-height: 1.6;
+              "
+            >
+              Export semua ucapan dan konfirmasi kehadiran tamu.
+            </p>
+            <button class="btn btn-solid" onclick="exportMessagesCSV()">
+              <i class="fa-solid fa-file-csv"></i> Download CSV Ucapan
+            </button>
+          </div>
+
+          <div
+            style="
+              background: var(--dark3);
+              border: 1px solid var(--border);
+              padding: 20px;
+            "
+          >
+            <h3
+              style="font-size: 0.9rem; color: var(--gold); margin-bottom: 8px"
+            >
+              <i class="fa-solid fa-list"></i> Konfirmasi Hadir
+            </h3>
+            <p
+              style="
+                font-size: 0.8rem;
+                color: var(--gray);
+                margin-bottom: 16px;
+                line-height: 1.6;
+              "
+            >
+              Hanya nama-nama yang konfirmasi hadir saja.
+            </p>
+            <button class="btn btn-solid" onclick="exportHadirCSV()">
+              <i class="fa-solid fa-file-csv"></i> Download CSV Hadir
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      // ============================================================
+      // KONFIGURASI — Sama dengan main.js
+      // ============================================================
+      const SUPABASE_URL = "https://tdlkbhzlvxovsrinhtha.supabase.co";
+      const SUPABASE_KEY = "sb_publishable_7i2Hp2kbkWmklAnaRXBHLA_uUKufVJK";
+
+      async function sbFetch(endpoint, options = {}) {
+        const res = await fetch(SUPABASE_URL + "/rest/v1/" + endpoint, {
+          ...options,
+          headers: {
+            apikey: SUPABASE_KEY,
+            Authorization: "Bearer " + SUPABASE_KEY,
+            "Content-Type": "application/json",
+            ...(options.headers || {}),
+          },
+        });
+        if (!res.ok) throw new Error("Error " + res.status);
+        const text = await res.text();
+        return text ? JSON.parse(text) : [];
+      }
+
+      // ============================================================
+      // DATA
+      // ============================================================
+      let allGuests = [];
+      let allMessages = [];
+      let filteredGuests = [];
+      let filteredMessages = [];
+      let guestPage = 1;
+      const PER_PAGE = 20;
+      let currentMsgFilter = "all";
+
+      async function loadAll() {
+        document.getElementById("lastUpdate").textContent = "Memperbarui...";
+        try {
+          const [guests, messages] = await Promise.all([
+            sbFetch("guests?select=*&order=opened_at.desc.nullslast"),
+            sbFetch("messages?select=*&order=created_at.desc"),
+          ]);
+          allGuests = guests || [];
+          allMessages = messages || [];
+          filteredGuests = [...allGuests];
+          filteredMessages = [...allMessages];
+          updateStats();
+          renderGuests();
+          renderMessages();
+          document.getElementById("lastUpdate").textContent =
+            "Update: " + new Date().toLocaleTimeString("id-ID");
+        } catch (err) {
+          showToast("Gagal load data: " + err.message);
+          document.getElementById("lastUpdate").textContent = "Gagal load";
+        }
+      }
+
+      // ============================================================
+      // STATS
+      // ============================================================
+      function updateStats() {
+        const opened = allGuests.filter((g) => g.opened).length;
+        const total = allGuests.length;
+        const hadir = allMessages.filter((m) => m.attend === "hadir").length;
+        const tidak = allMessages.filter(
+          (m) => m.attend === "tidak-hadir",
+        ).length;
+        const mungkin = allMessages.filter(
+          (m) => m.attend === "mungkin",
+        ).length;
+        const msgTotal = allMessages.length;
+        const pct = total > 0 ? Math.round((opened / total) * 100) : 0;
+
+        document.getElementById("statTotal").textContent = total;
+        document.getElementById("statOpened").textContent = opened;
+        document.getElementById("statOpenedPct").textContent =
+          pct + "% dari total";
+        document.getElementById("statHadir").textContent = hadir;
+        document.getElementById("statMessages").textContent = msgTotal;
+
+        // Progress bars
+        const base = msgTotal > 0 ? msgTotal : 1;
+        setProgress("Hadir", hadir, hadir, base);
+        setProgress("Tidak", tidak, tidak, base);
+        setProgress("Mungkin", mungkin, mungkin, base);
+      }
+
+      function setProgress(key, count, val, base) {
+        const pct = Math.round((val / base) * 100);
+        const el = document.getElementById("pct" + key);
+        const bar = document.getElementById("bar" + key);
+        if (el) el.textContent = count + " orang (" + pct + "%)";
+        if (bar) bar.style.width = pct + "%";
+      }
+
+      // ============================================================
+      // GUESTS TABLE
+      // ============================================================
+      function renderGuests() {
+        const cont = document.getElementById("guestsContent");
+        if (filteredGuests.length === 0) {
+          cont.innerHTML =
+            '<div class="empty"><i class="fa-regular fa-envelope"></i>Belum ada tamu yang buka undangan.<br><small>Share link ke tamu dulu!</small></div>';
+          document.getElementById("guestPagination").innerHTML = "";
+          return;
+        }
+
+        const start = (guestPage - 1) * PER_PAGE;
+        const page = filteredGuests.slice(start, start + PER_PAGE);
+
+        cont.innerHTML = `
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr>
+        <th>#</th>
+        <th>Nama Tamu</th>
+        <th>Status Buka</th>
+        <th>Waktu Buka</th>
+        <th>Aksi</th>
+      </tr></thead>
+      <tbody>
+        ${page
+          .map(
+            (g, i) => `
+          <tr>
+            <td style="color:var(--gray)">${start + i + 1}</td>
+            <td><strong>${esc(g.name)}</strong></td>
+            <td>${
+              g.opened
+                ? '<span class="badge badge-opened">📬 Sudah Buka</span>'
+                : '<span class="badge badge-belum">⏳ Belum</span>'
+            }</td>
+            <td class="time-ago">${g.opened_at ? formatTime(g.opened_at) : "—"}</td>
+            <td>
+              <button class="btn btn-sm" onclick="copyLink('${esc(g.name)}')">
+                <i class="fa-solid fa-link"></i> Copy Link
+              </button>
+            </td>
+          </tr>
+        `,
+          )
+          .join("")}
+      </tbody>
+    </table>
+    </div>
+  `;
+        renderGuestPagination();
+      }
+
+      function renderGuestPagination() {
+        const total = Math.ceil(filteredGuests.length / PER_PAGE);
+        const pag = document.getElementById("guestPagination");
+        if (total <= 1) {
+          pag.innerHTML = "";
+          return;
+        }
+
+        let html = `<button class="page-btn" onclick="guestGoPage(${guestPage - 1})" ${guestPage === 1 ? 'disabled style="opacity:.3"' : ""}>←</button>`;
+        for (let i = 1; i <= total; i++) {
+          if (i === 1 || i === total || Math.abs(i - guestPage) <= 1) {
+            html += `<button class="page-btn ${i === guestPage ? "active" : ""}" onclick="guestGoPage(${i})">${i}</button>`;
+          } else if (Math.abs(i - guestPage) === 2) {
+            html += `<span style="color:var(--gray);padding:0 4px">…</span>`;
+          }
+        }
+        html += `<button class="page-btn" onclick="guestGoPage(${guestPage + 1})" ${guestPage === total ? 'disabled style="opacity:.3"' : ""}>→</button>`;
+        html += `<span class="page-info">${filteredGuests.length} tamu</span>`;
+        pag.innerHTML = html;
+      }
+
+      function guestGoPage(p) {
+        const total = Math.ceil(filteredGuests.length / PER_PAGE);
+        if (p < 1 || p > total) return;
+        guestPage = p;
+        renderGuests();
+      }
+
+      function filterGuests(q) {
+        filteredGuests = allGuests.filter((g) =>
+          g.name.toLowerCase().includes(q.toLowerCase()),
+        );
+        guestPage = 1;
+        renderGuests();
+      }
+
+      // ============================================================
+      // MESSAGES LIST
+      // ============================================================
+      function renderMessages() {
+        const cont = document.getElementById("messagesContent");
+        const data =
+          currentMsgFilter === "all"
+            ? filteredMessages
+            : filteredMessages.filter((m) => m.attend === currentMsgFilter);
+
+        if (data.length === 0) {
+          cont.innerHTML =
+            '<div class="empty"><i class="fa-regular fa-comment"></i>Belum ada ucapan masuk.</div>';
+          return;
+        }
+
+        cont.innerHTML = data
+          .map(
+            (m) => `
+    <div class="msg-card">
+      <div class="msg-header">
+        <span class="msg-name">${esc(m.name)}</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          ${attendBadge(m.attend)}
+          <span class="time-ago">${formatTime(m.created_at)}</span>
+        </div>
+      </div>
+      <p class="msg-text">"${esc(m.message)}"</p>
+    </div>
+  `,
+          )
+          .join("");
+      }
+
+      function filterMessages(val, btn) {
+        currentMsgFilter = val;
+        document
+          .querySelectorAll(".filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderMessages();
+      }
+
+      function attendBadge(v) {
+        const map = {
+          hadir: "badge-hadir ✅ Hadir",
+          "tidak-hadir": "badge-tidak ❌ Tidak",
+          mungkin: "badge-mungkin 🤔 Belum Pasti",
+        };
+        const val = map[v] || "badge-belum " + v;
+        const [cls, ...label] = val.split(" ");
+        return `<span class="badge ${cls}">${label.join(" ")}</span>`;
+      }
+
+      // ============================================================
+      // TABS
+      // ============================================================
+      function switchTab(name, btn) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        document.getElementById("tab-" + name).classList.add("active");
+        btn.classList.add("active");
+      }
+
+      // ============================================================
+      // COPY LINK
+      // ============================================================
+      function copyLink(name) {
+        const baseUrl =
+          window.location.origin +
+          window.location.pathname.replace("dashboard.html", "");
+        const url = baseUrl + "index.html?to=" + encodeURIComponent(name);
+        navigator.clipboard
+          .writeText(url)
+          .then(() => showToast("✅ Link " + name + " disalin!"));
+      }
+
+      // ============================================================
+      // EXPORT
+      // ============================================================
+      function exportGuestsCSV() {
+        const header = "No,Nama,Status Buka,Waktu Buka\n";
+        const rows = allGuests
+          .map(
+            (g, i) =>
+              `${i + 1},"${g.name}","${g.opened ? "Sudah Buka" : "Belum"}","${g.opened_at || "-"}"`,
+          )
+          .join("\n");
+        download("tamu-buka-undangan.csv", header + rows, "text/csv");
+        showToast("✅ CSV tamu didownload!");
+      }
+      function exportMessagesCSV() {
+        const header = "No,Nama,Kehadiran,Ucapan,Waktu\n";
+        const rows = allMessages
+          .map(
+            (m, i) =>
+              `${i + 1},"${m.name}","${m.attend}","${m.message.replace(/"/g, "'")}","${m.created_at}"`,
+          )
+          .join("\n");
+        download("ucapan-tamu.csv", header + rows, "text/csv");
+        showToast("✅ CSV ucapan didownload!");
+      }
+      function exportHadirCSV() {
+        const hadir = allMessages.filter((m) => m.attend === "hadir");
+        const header = "No,Nama,Ucapan\n";
+        const rows = hadir
+          .map(
+            (m, i) => `${i + 1},"${m.name}","${m.message.replace(/"/g, "'")}"`,
+          )
+          .join("\n");
+        download("konfirmasi-hadir.csv", header + rows, "text/csv");
+        showToast("✅ CSV hadir didownload!");
+      }
+      function download(name, content, type) {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(new Blob([content], { type }));
+        a.download = name;
+        a.click();
+      }
+
+      // ============================================================
+      // UTILS
+      // ============================================================
+      function formatTime(iso) {
+        if (!iso) return "—";
+        return new Date(iso).toLocaleString("id-ID", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+      function esc(t) {
+        const d = document.createElement("div");
+        d.appendChild(document.createTextNode(t || ""));
+        return d.innerHTML;
+      }
+
+      let toastT;
+      function showToast(msg) {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        clearTimeout(toastT);
+        toastT = setTimeout(() => t.classList.remove("show"), 3000);
+      }
+
+      // Auto refresh setiap 30 detik
+      loadAll();
+      setInterval(loadAll, 30000);
+    </script>
+  </body>
+</html>
