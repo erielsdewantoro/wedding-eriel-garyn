@@ -1907,29 +1907,29 @@ section {
    RESPONSIVE — Mobile (≤767px)
    ============================================================ */
 @media (max-width: 767px) {
-  /* Gallery mobile: stack full-width, thumbs 3-col below */
+  /*
+    Gallery mobile layout:
+    Baris 1: card stack (full width)
+    Baris 2: thumbnail 1 | thumbnail 2 | thumbnail 3
+    Baris 3: thumbnail 4 | thumbnail 5 | (kosong)
+  */
   .gallery-layout {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .gallery-stack-wrap {
-    width: 100%;
-    order: 0;
-  }
-  .gallery-stack-wrap {
-    grid-column: unset;
-    grid-row: unset;
-  }
-  /* Thumbnail row di bawah */
-  .gallery-thumbs-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto auto;
     gap: 6px;
   }
+  /* Stack span 3 kolom, baris pertama */
+  .gallery-stack-wrap {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    width: 100%;
+  }
+  /* Thumbnails otomatis mengisi baris 2 dan 3 */
   .gthumb {
+    grid-column: auto;
+    grid-row: auto;
     aspect-ratio: 1/1;
-    order: 1;
   }
 
   /* Couple side-by-side */
