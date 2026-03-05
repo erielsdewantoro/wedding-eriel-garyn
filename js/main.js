@@ -1,52 +1,44 @@
 // ============================================================
-// WEDDING INVITATION — Eriel & Garyn
-// main.js — Fixed version: tracking + guestbook + live messages
+// WEDDING — Eriel & Garyn | main.js
 // ============================================================
-
 const CONFIG = {
   weddingDate: "2026-05-09T08:00:00",
   defaultGuest: "Tamu Undangan",
+  rateLimit: 2,
+  rateWindow: 5 * 60000,
+  protectLinks: false,
 };
 
-// ============================================================
-// SUPABASE — helper yang benar (handle 204 No Content)
-// ============================================================
+// ── Supabase ──────────────────────────────────────────────────
 const SUPABASE_URL = "https://tdlkbhzlvxovsrinhtha.supabase.co";
 const SUPABASE_KEY = "sb_publishable_7i2Hp2kbkWmklAnaRXBHLA_uUKufVJK";
-const SUPABASE_READY = true;
 
-async function sbGet(endpoint) {
-  const res = await fetch(SUPABASE_URL + "/rest/v1/" + endpoint, {
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: "Bearer " + SUPABASE_KEY,
-    },
+async function sbGet(ep) {
+  const r = await fetch(SUPABASE_URL + "/rest/v1/" + ep, {
+    headers: { apikey: SUPABASE_KEY, Authorization: "Bearer " + SUPABASE_KEY },
   });
-  if (!res.ok) throw new Error("GET error " + res.status);
-  return res.json();
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
 }
-
 async function sbPost(table, data) {
-  const res = await fetch(SUPABASE_URL + "/rest/v1/" + table, {
+  const r = await fetch(SUPABASE_URL + "/rest/v1/" + table, {
     method: "POST",
     headers: {
       apikey: SUPABASE_KEY,
       Authorization: "Bearer " + SUPABASE_KEY,
       "Content-Type": "application/json",
-      Prefer: "return=minimal", // ← 204 kosong, ini yang bener
+      Prefer: "return=minimal",
     },
     body: JSON.stringify(data),
   });
-  // 200, 201, 204 = sukses semua
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error("POST error " + res.status + ": " + errText);
+  if (!r.ok) {
+    const t = await r.text();
+    throw new Error(t);
   }
-  return true; // sukses
+  return true;
 }
-
 async function sbPatch(table, filter, data) {
-  const res = await fetch(SUPABASE_URL + "/rest/v1/" + table + "?" + filter, {
+  const r = await fetch(SUPABASE_URL + "/rest/v1/" + table + "?" + filter, {
     method: "PATCH",
     headers: {
       apikey: SUPABASE_KEY,
@@ -56,88 +48,92 @@ async function sbPatch(table, filter, data) {
     },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("PATCH error " + res.status);
+  if (!r.ok) throw new Error(r.status);
   return true;
 }
 
-// ============================================================
-// 1. NAMA TAMU DARI URL
-// ============================================================
-function getGuestName() {
+// ── Guest dari URL ────────────────────────────────────────────
+const guestName = (function () {
   const p = new URLSearchParams(window.location.search);
   const n = p.get("to");
   return n && n.trim() ? decodeURIComponent(n.trim()) : CONFIG.defaultGuest;
+})();
+const el = document.getElementById("guestName");
+if (el) el.textContent = guestName;
+
+// ── Protect link ──────────────────────────────────────────────
+async function checkAccess() {
+  if (!CONFIG.protectLinks || guestName === CONFIG.defaultGuest) return true;
+  try {
+    const d = await sbGet(
+      "guests?select=id&name=eq." + encodeURIComponent(guestName),
+    );
+    return d && d.length > 0;
+  } catch {
+    return true;
+  }
 }
 
-const guestName = getGuestName();
-const guestNameEl = document.getElementById("guestName");
-if (guestNameEl) guestNameEl.textContent = guestName;
-
-// ============================================================
-// 2. TRACKING — Catat ke Supabase saat "Buka Undangan" diklik
-//    Ini yang bikin dashboard berubah dari 0 jadi angka nyata
-// ============================================================
-async function trackGuestOpen(name) {
-  if (name === CONFIG.defaultGuest) return; // skip kalau buka tanpa ?to=
+// ── Track open ────────────────────────────────────────────────
+async function trackOpen(name) {
+  if (name === CONFIG.defaultGuest) return;
   try {
-    // Cek sudah ada belum
-    const existing = await sbGet(
+    const ex = await sbGet(
       "guests?select=id&name=eq." + encodeURIComponent(name),
     );
-    if (existing && existing.length > 0) {
-      // Update waktu buka
-      await sbPatch("guests", "id=eq." + existing[0].id, {
+    if (ex && ex.length > 0) {
+      await sbPatch("guests", "id=eq." + ex[0].id, {
         opened: true,
         opened_at: new Date().toISOString(),
       });
     } else {
-      // Insert baru
       await sbPost("guests", {
-        name: name,
-        slug: name
-          .toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^a-z0-9-]/g, ""),
+        name,
+        slug: slugify(name),
         opened: true,
         opened_at: new Date().toISOString(),
       });
     }
-    console.log("✅ Tracking OK:", name);
-  } catch (err) {
-    // Gagal tracking tidak masalah — undangan tetap jalan
-    console.warn("Tracking gagal (tidak masalah):", err.message);
+  } catch (e) {
+    console.warn("Track skip:", e.message);
   }
 }
 
-// ============================================================
-// 3. OPENING SCREEN
-// ============================================================
+// ── Opening ───────────────────────────────────────────────────
 const openBtn = document.getElementById("openBtn");
 const opening = document.getElementById("opening");
 const mainContent = document.getElementById("mainContent");
 const bgMusic = document.getElementById("bgMusic");
 
-openBtn.addEventListener("click", function () {
-  trackGuestOpen(guestName); // ← tracking di sini
-
-  opening.classList.add("fade-out");
-  setTimeout(function () {
-    opening.style.display = "none";
-    mainContent.classList.remove("hidden");
-    if (bgMusic) {
-      bgMusic.play().catch(function () {});
-      updateMusicState(true);
+openBtn &&
+  openBtn.addEventListener("click", async function () {
+    const ok = await checkAccess();
+    if (!ok) {
+      openBtn.style.display = "none";
+      document.getElementById("notFoundMsg")?.classList.remove("hidden");
+      return;
     }
-    startCountdown();
-    setTimeout(triggerHeroAnimations, 100);
-    initScrollReveal();
-    loadMessages(); // ← load ucapan setelah konten tampil
-  }, 800);
-});
+    trackOpen(guestName);
+    opening.classList.add("fade-out");
+    setTimeout(function () {
+      opening.style.display = "none";
+      mainContent.classList.remove("hidden");
+      if (bgMusic) {
+        bgMusic.play().catch(() => {});
+        updateMusicState(true);
+      }
+      startCountdown();
+      setTimeout(triggerHeroAnimations, 100);
+      initScrollReveal();
+      initBottomNav();
+      initStack();
+      initThumbs();
+      loadMessages();
+      checkMemoryPage();
+    }, 800);
+  });
 
-// ============================================================
-// 4. COUNTDOWN
-// ============================================================
+// ── Countdown ─────────────────────────────────────────────────
 function startCountdown() {
   const target = new Date(CONFIG.weddingDate).getTime();
   function tick() {
@@ -146,7 +142,7 @@ function startCountdown() {
       const el = document.getElementById("countdown");
       if (el)
         el.innerHTML =
-          '<p style="color:var(--gold);font-family:var(--font-display);font-size:1.4rem;letter-spacing:0.08em">✨ Hari yang Dinantikan Telah Tiba ✨</p>';
+          '<p style="font-family:var(--font-display);color:var(--gold);font-size:1.1rem;letter-spacing:.06em">✨ Hari yang Dinantikan Telah Tiba ✨</p>';
       return;
     }
     const pad = (n) => String(Math.floor(n)).padStart(2, "0");
@@ -163,20 +159,76 @@ function startCountdown() {
   setInterval(tick, 1000);
 }
 
-// ============================================================
-// 5. HERO ANIMATIONS
-// ============================================================
+// ── Kalender (tombol di bawah countdown) ─────────────────────
+function addToCalendar(type) {
+  const title = encodeURIComponent("Pernikahan Eriel & Garyn");
+  const details = encodeURIComponent(
+    "Akad Nikah 08.00 WIB | Resepsi 11.00–16.00 WIB",
+  );
+  const loc = encodeURIComponent("Jakarta");
+
+  if (type === "google") {
+    const url =
+      "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+      "&text=" +
+      title +
+      "&dates=20260509T080000/20260509T160000" +
+      "&details=" +
+      details +
+      "&location=" +
+      loc;
+    window.open(url, "_blank");
+  } else if (type === "ical") {
+    const ics = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "BEGIN:VEVENT",
+      "DTSTART:20260509T080000",
+      "DTEND:20260509T160000",
+      "SUMMARY:Pernikahan Eriel & Garyn",
+      "DESCRIPTION:Akad 08.00 | Resepsi 11.00 WIB",
+      "LOCATION:Jakarta",
+      "END:VEVENT",
+      "END:VCALENDAR",
+    ].join("\r\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar" }));
+    a.download = "undangan-eriel-garyn.ics";
+    a.click();
+    showToast("📅 File kalender diunduh!");
+    return;
+  } else if (type === "outlook") {
+    const url =
+      "https://outlook.live.com/calendar/0/deeplink/compose?subject=" +
+      title +
+      "&startdt=2026-05-09T08:00:00&enddt=2026-05-09T16:00:00" +
+      "&body=" +
+      details +
+      "&location=" +
+      loc;
+    window.open(url, "_blank");
+  }
+  showToast("📅 Membuka kalender...");
+}
+
+// ── Memory page link ──────────────────────────────────────────
+function checkMemoryPage() {
+  const link = document.getElementById("memoryLink");
+  if (link && Date.now() > new Date(CONFIG.weddingDate).getTime()) {
+    link.style.display = "inline-flex";
+  }
+}
+
+// ── Hero animations ───────────────────────────────────────────
 function triggerHeroAnimations() {
   document.querySelectorAll(".fade-up").forEach(function (el, i) {
     setTimeout(function () {
       el.classList.add("animated");
-    }, i * 150);
+    }, i * 130);
   });
 }
 
-// ============================================================
-// 6. SCROLL REVEAL
-// ============================================================
+// ── Scroll reveal ─────────────────────────────────────────────
 function initScrollReveal() {
   const obs = new IntersectionObserver(
     function (entries) {
@@ -187,16 +239,220 @@ function initScrollReveal() {
         }
       });
     },
-    { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
+    { threshold: 0.08, rootMargin: "0px 0px -30px 0px" },
   );
   document.querySelectorAll(".reveal").forEach(function (el) {
     obs.observe(el);
   });
 }
 
-// ============================================================
-// 7. MUSIC PLAYER
-// ============================================================
+// ── Bottom nav ────────────────────────────────────────────────
+function initBottomNav() {
+  const items = document.querySelectorAll(".bnav-item");
+  const secIds = [
+    "hero",
+    "couple",
+    "story",
+    "events",
+    "gallery",
+    "gift",
+    "guestbook",
+  ];
+  const obs = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        const id = e.target.id;
+        // Map section → nav
+        const map = {
+          hero: "hero",
+          couple: "couple",
+          story: "couple",
+          events: "events",
+          gallery: "gallery",
+          gift: "gallery",
+          guestbook: "guestbook",
+        };
+        const active = map[id] || id;
+        items.forEach(function (it) {
+          it.classList.toggle(
+            "active",
+            it.getAttribute("data-section") === active,
+          );
+        });
+      });
+    },
+    { threshold: 0.45 },
+  );
+  secIds.forEach(function (id) {
+    const el = document.getElementById(id);
+    if (el) obs.observe(el);
+  });
+  items.forEach(function (item) {
+    item.addEventListener("click", function (e) {
+      e.preventDefault();
+      const target = document.querySelector(item.getAttribute("href"));
+      if (target) target.scrollIntoView({ behavior: "smooth" });
+    });
+  });
+}
+
+// ── Gallery Stack (Card stack swipeable + auto loop) ──────────
+function initStack() {
+  const stackEl = document.getElementById("galleryStack");
+  if (!stackEl) return;
+
+  const cards = Array.from(stackEl.querySelectorAll(".stack-card"));
+  if (!cards.length) return;
+
+  const dotsEl = document.getElementById("stackDots");
+  let current = 0;
+  let autoTimer = null;
+  let dragStart = null;
+  let isDragging = false;
+
+  // Build dots
+  if (dotsEl) {
+    cards.forEach(function (_, i) {
+      const d = document.createElement("div");
+      d.className = "stack-dot" + (i === 0 ? " active" : "");
+      d.addEventListener("click", function () {
+        goTo(i);
+        resetAuto();
+      });
+      dotsEl.appendChild(d);
+    });
+  }
+
+  function updatePositions() {
+    cards.forEach(function (card, i) {
+      card.classList.remove(
+        "pos-0",
+        "pos-1",
+        "pos-2",
+        "pos-hidden",
+        "dragging",
+      );
+      const rel = (i - current + cards.length) % cards.length;
+      if (rel === 0) card.classList.add("pos-0");
+      else if (rel === 1) card.classList.add("pos-1");
+      else if (rel === 2) card.classList.add("pos-2");
+      else card.classList.add("pos-hidden");
+    });
+    if (dotsEl) {
+      dotsEl.querySelectorAll(".stack-dot").forEach(function (d, i) {
+        d.classList.toggle("active", i === current);
+      });
+    }
+  }
+
+  function goTo(idx) {
+    current = (idx + cards.length) % cards.length;
+    updatePositions();
+  }
+  function next() {
+    goTo(current + 1);
+  }
+
+  function startAuto() {
+    autoTimer = setInterval(next, 3200);
+  }
+  function resetAuto() {
+    clearInterval(autoTimer);
+    startAuto();
+  }
+
+  // ── Touch / Mouse drag ──
+  function getClientX(e) {
+    return e.touches ? e.touches[0].clientX : e.clientX;
+  }
+
+  stackEl.addEventListener("mousedown", function (e) {
+    dragStart = getClientX(e);
+    isDragging = true;
+  });
+  stackEl.addEventListener(
+    "touchstart",
+    function (e) {
+      dragStart = getClientX(e);
+      isDragging = true;
+      resetAuto();
+    },
+    { passive: true },
+  );
+
+  stackEl.addEventListener("mouseup", function (e) {
+    if (!isDragging || dragStart === null) return;
+    const diff = dragStart - getClientX(e);
+    if (Math.abs(diff) > 35) {
+      diff > 0 ? next() : goTo(current - 1);
+      resetAuto();
+    }
+    isDragging = false;
+    dragStart = null;
+  });
+  stackEl.addEventListener("touchend", function (e) {
+    if (!isDragging || dragStart === null) return;
+    const diff = dragStart - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 30) {
+      diff > 0 ? next() : goTo(current - 1);
+    }
+    isDragging = false;
+    dragStart = null;
+  });
+  stackEl.addEventListener("mouseleave", function () {
+    isDragging = false;
+    dragStart = null;
+  });
+
+  // Click top card → lightbox
+  stackEl.addEventListener("click", function (e) {
+    if (isDragging) return;
+    const top = cards[current];
+    if (!top) return;
+    const src = top.getAttribute("data-src");
+    if (src) openLightbox(src);
+  });
+
+  updatePositions();
+  startAuto();
+}
+
+// ── Thumbnail click → lightbox ────────────────────────────────
+function initThumbs() {
+  document.querySelectorAll(".gthumb").forEach(function (th) {
+    th.addEventListener("click", function () {
+      const src = th.getAttribute("data-src");
+      if (src) openLightbox(src);
+    });
+  });
+}
+
+// ── Lightbox ──────────────────────────────────────────────────
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightboxImg");
+const lightboxClose = document.getElementById("lightboxClose");
+
+function openLightbox(src) {
+  if (!lightbox) return;
+  lightboxImg.src = src;
+  lightbox.classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+function closeLightbox() {
+  if (lightbox) lightbox.classList.remove("active");
+  document.body.style.overflow = "";
+}
+lightboxClose && lightboxClose.addEventListener("click", closeLightbox);
+lightbox &&
+  lightbox.addEventListener("click", function (e) {
+    if (e.target === lightbox) closeLightbox();
+  });
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") closeLightbox();
+});
+
+// ── Music ─────────────────────────────────────────────────────
 const musicToggle = document.getElementById("musicToggle");
 const musicIcon = document.getElementById("musicIcon");
 const musicBar = document.getElementById("musicBar");
@@ -208,7 +464,7 @@ function updateMusicState(on) {
     musicIcon.className = on ? "fa-solid fa-pause" : "fa-solid fa-music";
   if (musicBar) musicBar.classList.toggle("paused", !on);
 }
-if (musicToggle) {
+musicToggle &&
   musicToggle.addEventListener("click", function () {
     if (!bgMusic) return;
     if (isPlaying) {
@@ -220,67 +476,78 @@ if (musicToggle) {
         .then(function () {
           updateMusicState(true);
         })
-        .catch(function () {});
+        .catch(() => {});
     }
   });
+
+// ── Rate limiter ──────────────────────────────────────────────
+function getRateData() {
+  try {
+    return JSON.parse(
+      localStorage.getItem("wb_rate") || '{"count":0,"start":0}',
+    );
+  } catch {
+    return { count: 0, start: 0 };
+  }
+}
+function checkRateLimit() {
+  const now = Date.now(),
+    d = getRateData();
+  if (now - d.start > CONFIG.rateWindow) {
+    localStorage.setItem("wb_rate", JSON.stringify({ count: 0, start: now }));
+    return true;
+  }
+  return d.count < CONFIG.rateLimit;
+}
+function incrementRate() {
+  const now = Date.now();
+  let d = getRateData();
+  if (now - d.start > CONFIG.rateWindow) d = { count: 0, start: now };
+  d.count++;
+  localStorage.setItem("wb_rate", JSON.stringify(d));
+}
+function getRemainingMins() {
+  const d = getRateData();
+  return Math.max(
+    1,
+    Math.ceil((CONFIG.rateWindow - (Date.now() - d.start)) / 60000),
+  );
+}
+function updateRateLimitInfo() {
+  const el = document.getElementById("rateLimitInfo");
+  if (!el) return;
+  if (!checkRateLimit()) {
+    el.textContent =
+      "⏳ Batas pengiriman. Coba lagi dalam " + getRemainingMins() + " menit.";
+  } else {
+    const d = getRateData();
+    el.textContent =
+      d.count > 0
+        ? "(" + d.count + "/" + CONFIG.rateLimit + " ucapan dalam 5 menit ini)"
+        : "";
+  }
 }
 
-// ============================================================
-// 8. GALLERY LIGHTBOX
-// ============================================================
-const lightbox = document.getElementById("lightbox");
-const lightboxImg = document.getElementById("lightboxImg");
-const lightboxClose = document.getElementById("lightboxClose");
-
-document.querySelectorAll(".gallery-item").forEach(function (item) {
-  item.addEventListener("click", function () {
-    const src = item.getAttribute("data-src");
-    if (src && lightbox) {
-      lightboxImg.src = src;
-      lightbox.classList.add("active");
-      document.body.style.overflow = "hidden";
-    }
-  });
-});
-if (lightboxClose) lightboxClose.addEventListener("click", closeLightbox);
-if (lightbox)
-  lightbox.addEventListener("click", function (e) {
-    if (e.target === lightbox) closeLightbox();
-  });
-document.addEventListener("keydown", function (e) {
-  if (e.key === "Escape") closeLightbox();
-});
-function closeLightbox() {
-  if (lightbox) lightbox.classList.remove("active");
-  document.body.style.overflow = "";
-}
-
-// ============================================================
-// 9. GUESTBOOK — Kirim & Tampilkan Ucapan
-// ============================================================
+// ── Guestbook ─────────────────────────────────────────────────
 const submitBtn = document.getElementById("submitBtn");
 const gbNameEl = document.getElementById("gbName");
 const gbAttendEl = document.getElementById("gbAttend");
-const gbMessageEl = document.getElementById("gbMessage");
+const gbMsgEl = document.getElementById("gbMessage");
 const msgListEl = document.getElementById("messagesList");
 const charCountEl = document.getElementById("charCount");
 
-// Isi nama otomatis dari URL
 if (gbNameEl && guestName !== CONFIG.defaultGuest) gbNameEl.value = guestName;
 
-// Counter karakter
-if (gbMessageEl) {
-  gbMessageEl.addEventListener("input", function () {
-    if (charCountEl) charCountEl.textContent = gbMessageEl.value.length;
+gbMsgEl &&
+  gbMsgEl.addEventListener("input", function () {
+    if (charCountEl) charCountEl.textContent = gbMsgEl.value.length;
   });
-}
 
-// ---- Kirim ucapan ----
-if (submitBtn) {
+submitBtn &&
   submitBtn.addEventListener("click", async function () {
     const name = gbNameEl ? gbNameEl.value.trim() : "";
     const attend = gbAttendEl ? gbAttendEl.value : "hadir";
-    const message = gbMessageEl ? gbMessageEl.value.trim() : "";
+    const message = gbMsgEl ? gbMsgEl.value.trim() : "";
 
     if (!name) {
       showToast("⚠️ Nama tidak boleh kosong");
@@ -289,7 +556,19 @@ if (submitBtn) {
     }
     if (!message) {
       showToast("⚠️ Pesan tidak boleh kosong");
-      gbMessageEl && gbMessageEl.focus();
+      gbMsgEl && gbMsgEl.focus();
+      return;
+    }
+
+    if (!checkRateLimit()) {
+      showToast(
+        "⏳ Maks " +
+          CONFIG.rateLimit +
+          " ucapan per 5 menit. Tunggu " +
+          getRemainingMins() +
+          " menit lagi.",
+      );
+      updateRateLimitInfo();
       return;
     }
 
@@ -299,43 +578,26 @@ if (submitBtn) {
 
     try {
       await sbPost("messages", { name, attend, message });
-
+      incrementRate();
+      updateRateLimitInfo();
       showToast("✨ Ucapan berhasil dikirim! Terima kasih.");
-
-      // Tampilkan langsung di list tanpa reload
-      const msgObj = {
-        name,
-        attend,
-        message,
-        time: new Date().toLocaleString("id-ID", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      };
-      prependMessage(msgObj);
-
-      // Reset form
-      if (gbMessageEl) {
-        gbMessageEl.value = "";
+      prependMessage({ name, attend, message, time: fmtNow() });
+      if (gbMsgEl) {
+        gbMsgEl.value = "";
+        if (charCountEl) charCountEl.textContent = "0";
       }
-      if (charCountEl) charCountEl.textContent = "0";
       if (gbNameEl && guestName !== CONFIG.defaultGuest)
         gbNameEl.value = guestName;
-    } catch (err) {
-      console.error("Submit error:", err);
-      showToast("❌ Gagal kirim: " + err.message);
+    } catch (e) {
+      showToast("❌ Gagal kirim. Periksa koneksi.");
+      console.error(e);
     }
 
     submitBtn.disabled = false;
     submitBtn.innerHTML =
       '<i class="fa-solid fa-paper-plane"></i> Kirim Ucapan';
   });
-}
 
-// ---- Tampilkan ucapan di list ----
 function attendLabel(v) {
   return (
     {
@@ -345,51 +607,48 @@ function attendLabel(v) {
     }[v] || v
   );
 }
-
 function createMsgEl(msg) {
   const el = document.createElement("div");
   el.className = "message-card";
-  el.innerHTML = `
-    <div class="message-header">
-      <span class="message-name">${esc(msg.name)}</span>
-      <span class="message-attend">${attendLabel(msg.attend)}</span>
-    </div>
-    <p class="message-text">"${esc(msg.message)}"</p>
-    <p class="message-time">${msg.time}</p>
-  `;
+  el.innerHTML =
+    '<div class="message-header"><span class="message-name">' +
+    esc(msg.name) +
+    "</span>" +
+    '<span class="message-attend">' +
+    attendLabel(msg.attend) +
+    "</span></div>" +
+    '<p class="message-text">"' +
+    esc(msg.message) +
+    '"</p>' +
+    '<p class="message-time">' +
+    msg.time +
+    "</p>";
   return el;
 }
-
 function prependMessage(msg) {
   if (!msgListEl) return;
-  const empty = msgListEl.querySelector("p.empty-msg");
-  if (empty) empty.remove();
+  msgListEl.querySelector(".empty-msg")?.remove();
   msgListEl.insertBefore(createMsgEl(msg), msgListEl.firstChild);
-  // Update counter
-  const countEl = document.getElementById("messagesCount");
-  if (countEl) {
-    const current = parseInt(countEl.textContent) || 0;
-    countEl.textContent = current + 1 + " ucapan";
-  }
-  // Scroll ke atas agar pesan baru terlihat
-  const scrollEl = document.querySelector(".messages-scroll");
-  if (scrollEl) scrollEl.scrollTop = 0;
+  const c = document.getElementById("messagesCount");
+  if (c) c.textContent = (parseInt(c.textContent) || 0) + 1 + " ucapan";
+  const s = document.querySelector(".messages-scroll");
+  if (s) s.scrollTop = 0;
 }
-
 async function loadMessages() {
   if (!msgListEl) return;
   try {
     const data = await sbGet(
       "messages?select=*&order=created_at.desc&limit=50",
     );
+    const c = document.getElementById("messagesCount");
     if (!data || data.length === 0) {
       msgListEl.innerHTML =
         '<p class="empty-msg" style="text-align:center;color:var(--gray);font-style:italic;padding:2rem 0;font-family:var(--font-body)">Belum ada ucapan. Jadilah yang pertama! 💌</p>';
+      if (c) c.textContent = "0 ucapan";
       return;
     }
+    if (c) c.textContent = data.length + " ucapan";
     msgListEl.innerHTML = "";
-    const countEl = document.getElementById("messagesCount");
-    if (countEl) countEl.textContent = data.length + " ucapan";
     data.forEach(function (row) {
       msgListEl.appendChild(
         createMsgEl({
@@ -406,15 +665,14 @@ async function loadMessages() {
         }),
       );
     });
-  } catch (err) {
+  } catch (e) {
     msgListEl.innerHTML =
       '<p style="text-align:center;color:var(--gray);padding:2rem 0">Gagal memuat ucapan.</p>';
   }
+  updateRateLimitInfo();
 }
 
-// ============================================================
-// 10. COPY REKENING
-// ============================================================
+// ── Copy rekening ─────────────────────────────────────────────
 function copyText(text) {
   navigator.clipboard
     .writeText(text)
@@ -432,9 +690,7 @@ function copyText(text) {
     });
 }
 
-// ============================================================
-// 11. TOAST NOTIFICATION
-// ============================================================
+// ── Toast ─────────────────────────────────────────────────────
 const toastEl = document.getElementById("toast");
 let toastTimer;
 function showToast(msg) {
@@ -447,24 +703,31 @@ function showToast(msg) {
   }, 3500);
 }
 
-// ============================================================
-// 12. SMOOTH SCROLL
-// ============================================================
-document.querySelectorAll('a[href^="#"]').forEach(function (a) {
-  a.addEventListener("click", function (e) {
-    e.preventDefault();
-    const t = document.querySelector(a.getAttribute("href"));
-    if (t) t.scrollIntoView({ behavior: "smooth" });
-  });
-});
-
-// ============================================================
-// UTILITY
-// ============================================================
+// ── Utils ─────────────────────────────────────────────────────
+function slugify(n) {
+  return n
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "");
+}
 function esc(t) {
   const d = document.createElement("div");
   d.appendChild(document.createTextNode(t || ""));
   return d.innerHTML;
 }
+function fmtNow() {
+  return new Date().toLocaleString("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
-console.log("🎉 Wedding loaded! Guest:", guestName);
+console.log(
+  "🎉 Wedding | Guest:",
+  guestName,
+  "| Protect:",
+  CONFIG.protectLinks,
+);
